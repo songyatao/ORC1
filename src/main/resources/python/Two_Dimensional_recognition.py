@@ -40,7 +40,7 @@ def plot_contours(image, contours, title):
     for contour in contours:
         contour = contour.reshape(-1, 2)  # 重新调整形状为 (N, 2)
         plt.plot(contour[:, 0], contour[:, 1], marker='o')
-    plt.show()
+    # plt.show()
 
 # 读取指定文件夹中的图像文件
 
