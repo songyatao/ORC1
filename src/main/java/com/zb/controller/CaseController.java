@@ -8,6 +8,7 @@ import com.zb.service.CropService;
 import com.zb.service.UploadedService;
 import com.zb.tools.AppRootPath;
 import com.zb.tools.CallPad_test;
+import com.zb.tools.CropTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,8 @@ public class CaseController {
     @Autowired
     private CropService cropService;
 
+    private CropTool cropTool = null;
+
     @PostMapping
     public String createCase(@RequestBody Case newCase) {
         String title = newCase.getTitle();
@@ -75,13 +78,7 @@ public class CaseController {
 //        D:\SWork\OCR_Demo\src\main\resources\ori\img1.png
         String file_path = AppRootPath.getappRootPath_ori() + fileName;
         File destinationFile = new File(file_path);
-//        int dotIndex = fileName.lastIndexOf('.');
-//        if (dotIndex > 0) {
-//            fileName = fileName.substring(0, dotIndex);
-//        }
-//        System.out.println(fileName);
-//        System.out.println(file_path);
-//        return response;
+
         try {
             file.transferTo(destinationFile); // 保存图片到本地
             //保存图片到数据库==================
@@ -103,42 +100,14 @@ public class CaseController {
 //            System.out.println(sb.toString());
 
             CallPad_test.Call(fileName, in, caseId);//调用python程序
-//            Thread.sleep(600000);
 
             //调用python程序后，剪裁后的图片已经保存到本地文件夹
             //问题：所有结果都保存在同一个文件夹，保存到数据库怎么区分==================
 //                  可以用caseID/imagename文件夹区分不同案例的不同剪裁结果 √
             //将各自案件各自图片的剪裁结果保存各自的数据库中
-            int dotIndex = fileName.lastIndexOf('.');
-            if (dotIndex > 0) {
-                fileName = fileName.substring(0, dotIndex);
-            }
-            String crop_file_path = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\" + "picture";
 
-            Path directoryPath = Paths.get(crop_file_path);
-
-
-            try (Stream<Path> subDirs = Files.list(directoryPath)) {
-                List<Path> imageFiles = subDirs
-                        .filter(Files::isDirectory)
-                        .flatMap(dir -> {
-                            try {
-                                return Files.list(dir).filter(Files::isRegularFile).filter(this::isImageFile);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                return Stream.empty();
-                            }
-                        })
-                        .collect(Collectors.toList());
-
-                for (Path imageFile : imageFiles) {
-                    int uploadedId = uploadedService.findIdByCaseIdAndName(caseId, fileName);
-                    cropService.createCrop(uploadedId, imageFile.toString());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            cropTool = new CropTool();
+            cropTool.CropToDB(fileName, caseId, uploadedService, cropService);
 
 
 //            response.put("message", "File uploaded successfully");
@@ -162,12 +131,8 @@ public class CaseController {
         }
     }
 
-    private boolean isImageFile(Path path) {
-        String fileName = path.getFileName().toString().toLowerCase();
-        return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png") || fileName.endsWith(".gif");
-    }
 
-    @PostMapping("/{caseId}/results")
+    @GetMapping("/{caseId}/results")
     public List<String> getResults(@RequestParam int uploadedId) {
         return cropService.getCropsByUploadedId(uploadedId);
     }

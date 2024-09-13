@@ -90,7 +90,7 @@ public class TwoController {
 //            e.printStackTrace();
 //            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
-        return DimensionToDB.toDB(caseId, fileName, uploadedService, twoService, "three_dimensional");
+        return DimensionToDB.toDB(caseId, fileName, uploadedService, twoService, "two_dimensional");
 
     }
 }

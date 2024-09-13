@@ -57,7 +57,7 @@
     }
 
     function fetchResults() {
-        fetch('http://localhost:8080/case/1/results?uploadedId=81') // Adjust URL as needed
+        fetch('http://localhost:8080/case/1/results?uploadedId=89')
             .then(response => response.json())
             .then(results => {
                 const resultsDiv = document.getElementById('results');
@@ -65,9 +65,9 @@
 
                 results.forEach(result => {
                     const img = document.createElement('img');
-                    img.src = result; // Adjust this based on your API response
-                    img.style.maxWidth = '500px';
-                    img.style.maxHeight = '500px';
+                    img.src = `http://localhost:8080/images/${result}`; // Ensure the URL matches your server's static files path
+                    img.style.maxWidth = '100px';
+                    img.style.maxHeight = '100px';
                     resultsDiv.appendChild(img);
                 });
             })
