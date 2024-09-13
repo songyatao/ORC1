@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  * @auther 宋亚涛
  * @verson 1.0
  */
-@Service
+@Service("twoService")
 public class TwoServiceimpl implements TwoService {
     @Autowired
     private TwoMapper twoMapper;

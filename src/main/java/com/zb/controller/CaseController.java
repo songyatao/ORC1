@@ -1,6 +1,8 @@
 package com.zb.controller;
 
+import com.zb.Result.Result;
 import com.zb.entity.Case;
+import com.zb.entity.Crop;
 import com.zb.service.CaseService;
 import com.zb.service.CropService;
 import com.zb.service.UploadedService;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +22,12 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @auther 宋亚涛
@@ -53,7 +60,7 @@ public class CaseController {
 
     @PostMapping("/{caseId}/upload")
     public ResponseEntity<?> uploadImage(@PathVariable("caseId") int caseId,
-                                         @RequestParam("image") MultipartFile file) {
+                                         @RequestParam("image") MultipartFile file) throws IOException, InterruptedException {
         BufferedReader in = null;
 
         Map<String, String> response = new HashMap<>();
@@ -106,19 +113,32 @@ public class CaseController {
             if (dotIndex > 0) {
                 fileName = fileName.substring(0, dotIndex);
             }
-            String crop_file_path = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName;
+            String crop_file_path = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\" + "picture";
+
             Path directoryPath = Paths.get(crop_file_path);
 
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(directoryPath)) {
-                for (Path entry : stream) {
-                    if (Files.isRegularFile(entry)) {
-                        // Call method to insert file path into the database
-                        //获取 uploaded_id
-                        int uploaded_id = uploadedService.findIdByPath(file_path);
-                        cropService.createCrop(uploaded_id, entry.toString());
-                    }
+
+            try (Stream<Path> subDirs = Files.list(directoryPath)) {
+                List<Path> imageFiles = subDirs
+                        .filter(Files::isDirectory)
+                        .flatMap(dir -> {
+                            try {
+                                return Files.list(dir).filter(Files::isRegularFile).filter(this::isImageFile);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                return Stream.empty();
+                            }
+                        })
+                        .collect(Collectors.toList());
+
+                for (Path imageFile : imageFiles) {
+                    int uploadedId = uploadedService.findIdByCaseIdAndName(caseId, fileName);
+                    cropService.createCrop(uploadedId, imageFile.toString());
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
 
 
 //            response.put("message", "File uploaded successfully");
@@ -141,5 +161,16 @@ public class CaseController {
             }
         }
     }
+
+    private boolean isImageFile(Path path) {
+        String fileName = path.getFileName().toString().toLowerCase();
+        return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png") || fileName.endsWith(".gif");
+    }
+
+    @PostMapping("/{caseId}/results")
+    public List<String> getResults(@RequestParam int uploadedId) {
+        return cropService.getCropsByUploadedId(uploadedId);
+    }
+
 }
 

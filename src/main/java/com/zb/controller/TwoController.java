@@ -1,6 +1,5 @@
 package com.zb.controller;
 
-import com.zb.service.BaseService;
 import com.zb.service.TwoService;
 import com.zb.service.UploadedService;
 import com.zb.tools.AppRootPath;
@@ -34,7 +33,7 @@ import java.util.stream.Stream;
 public class TwoController {
 
     @Autowired
-    private BaseService twoService;
+    private TwoService twoService;
     @Autowired
     private UploadedService uploadedService;
 
@@ -62,22 +61,7 @@ public class TwoController {
             }
         }
 
-        //将没处理的结果保存到数据库
-//        String two_file_path = "D:\\SWork\\OCR_Demo\\src\\main\\resources\\result\\" + caseId + "\\" + fileName + "\\" + "picture";
-//        Path directoryPath = Paths.get(two_file_path);
-//        try (Stream<Path> stream = Files.walk(directoryPath)) {
-//            stream.filter(Files::isRegularFile)
-//                    .forEach(entry -> {
-//                        // 通过fileName 和 caseId 查找uploaded_id
-//                        int uploaded_id = uploadedService.findIdByCaseIdAndName(caseId, fileName);
-//                        twoService.insertTwo(1, entry.toString());
-//                    });
-//
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
+
 
 
         //将二维结果保存到数据库
@@ -105,8 +89,8 @@ public class TwoController {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }///
-        return DimensionToDB.toDB(caseId, fileName, uploadedService, twoService);
+//        }
+        return DimensionToDB.toDB(caseId, fileName, uploadedService, twoService, "three_dimensional");
 
     }
 }

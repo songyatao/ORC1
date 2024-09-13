@@ -16,13 +16,13 @@ import java.util.stream.Stream;
  * @verson 1.0
  */
 public class DimensionToDB {
-    public static ResponseEntity<?> toDB(int caseId, String fileName, UploadedService uploadedService, BaseService service){
+    public static ResponseEntity<?> toDB(int caseId, String fileName, UploadedService uploadedService, BaseService service, String flag) {
         String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\" + "picture";
         Path baseDirectoryPath = Paths.get(basePath);
 
         try (Stream<Path> subDirectories = Files.walk(baseDirectoryPath, 1)) { // 仅遍历一级子目录
             subDirectories.filter(Files::isDirectory).forEach(subDir -> {
-                Path twoDimensionalPath = subDir.resolve("two_dimensional");
+                Path twoDimensionalPath = subDir.resolve(flag);
                 if (Files.exists(twoDimensionalPath) && Files.isDirectory(twoDimensionalPath)) {
                     try (Stream<Path> imageFiles = Files.walk(twoDimensionalPath)) {
                         imageFiles.filter(Files::isRegularFile).forEach(entry -> {

@@ -9,13 +9,12 @@ import org.springframework.stereotype.Service;
  * @auther 宋亚涛
  * @verson 1.0
  */
-@Service
+@Service("fourService")
 public class FourServiceimpl implements FourService {
     @Autowired
     private FourMapper fourMapper;
-
     @Override
-    public void insertFour(int uploaded_id, String file_path) {
+    public void insert(int uploaded_id, String file_path) {
         fourMapper.add(uploaded_id, file_path);
     }
 }

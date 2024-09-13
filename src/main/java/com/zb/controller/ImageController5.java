@@ -24,10 +24,10 @@
 //    @GetMapping("test5")
 //    public String test5() {
 //        BufferedReader in = null;
-//        String arg1 = "D:\\SWork\\OCR_Demo\\src\\main\\resources\\result\\Test\\T";
-//        String arg2 = "D:\\SWork\\OCR_Demo\\src\\main\\resources\\result\\Test\\Color_Result";
+//        String arg1 = "D:\\SWork\\OCR_Demo\\src\\main\\resources\\result\\Test";
+////        String arg2 = "D:\\SWork\\OCR_Demo\\src\\main\\resources\\result\\Test\\Color_Result";
 //        try {
-//            String[] args1 = new String[]{"python","D:\\SWork\\python\\COLOR.py", arg1,arg2};
+//            String[] args1 = new String[]{"python","D:\\SWork\\python\\COLOR.py", arg1};
 //            Process proc = Runtime.getRuntime().exec(args1);
 //            in = new BufferedReader(new InputStreamReader(proc.getInputStream(), "gbk"));
 //            StringBuilder sb = new StringBuilder();
