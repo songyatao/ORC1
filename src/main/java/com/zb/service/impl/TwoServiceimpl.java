@@ -14,8 +14,9 @@ public class TwoServiceimpl implements TwoService {
     @Autowired
     private TwoMapper twoMapper;
 
+
     @Override
-    public void insertTwo(int uploaded_id, String file_path) {
+    public void insert(int uploaded_id, String file_path) {
         twoMapper.add(uploaded_id, file_path);
     }
 }

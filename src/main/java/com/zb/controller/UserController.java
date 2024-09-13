@@ -4,6 +4,7 @@ package com.zb.controller;
 import com.zb.Result.Result;
 import com.zb.entity.User;
 import com.zb.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin //解决跨域问题
+@Slf4j
 public class UserController {
     //注入userService
     @Autowired

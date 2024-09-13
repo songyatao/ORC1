@@ -6,6 +6,7 @@ import com.zb.service.CropService;
 import com.zb.service.UploadedService;
 import com.zb.tools.AppRootPath;
 import com.zb.tools.CallPad_test;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/case")
 @CrossOrigin//解决跨域问题
+@Slf4j
 public class CaseController {
     @Autowired
     private CaseService caseService;

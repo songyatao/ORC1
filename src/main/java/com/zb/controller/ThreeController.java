@@ -5,6 +5,7 @@ import com.zb.service.UploadedService;
 import com.zb.tools.AppRootPath;
 import com.zb.tools.CallThree;
 import com.zb.tools.CallTwo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/case")
 @CrossOrigin//解决跨域问题
+@Slf4j
 public class ThreeController {
     @Autowired
     private ThreeService threeService;
