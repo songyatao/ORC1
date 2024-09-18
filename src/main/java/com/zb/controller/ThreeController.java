@@ -1,12 +1,9 @@
 package com.zb.controller;
 
 import com.zb.service.BaseService;
-import com.zb.service.ThreeService;
 import com.zb.service.UploadedService;
-import com.zb.tools.AppRootPath;
 import com.zb.tools.CallThree;
-import com.zb.tools.CallTwo;
-import com.zb.tools.DimensionToDB;
+import com.zb.tools.DimensionTools;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,12 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * @auther 宋亚涛
@@ -36,6 +31,8 @@ public class ThreeController {
     @Autowired
     private UploadedService uploadedService;
 
+
+    //对识别成功的结果进行三位处理
     @PostMapping("/{caseId}/{fileName}/three")
     public ResponseEntity<?> twoDimensional(@PathVariable("caseId") int caseId,
                                             @PathVariable("fileName") String fileName) {
@@ -87,7 +84,25 @@ public class ThreeController {
 //            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 
-        return DimensionToDB.toDB(caseId, fileName, uploadedService, threeService,"three_dimensional");
+        return DimensionTools.toDB(caseId, fileName, uploadedService, threeService,"three_dimensional");
 
+    }
+
+    //将三维结果返回给前端
+    @PostMapping("/result/{caseId}/{uploaded_id}/three")
+    public ResponseEntity<List<String>> getImages(@PathVariable int uploaded_id) {
+        try {
+//            List<String> imageUrls = threeService.getAllImageUrlsByUploadedId(uploaded_id);
+//            String baseUrl = "http://localhost:8080/";
+//            List<String> updatedPaths = imageUrls.stream()
+//                    .map(path -> path.replace("D:\\SWork\\OCR_Demo\\src\\main\\resources\\static\\", baseUrl))
+//                    .collect(Collectors.toList());
+////            System.out.println(updatedPaths);
+//            return new ResponseEntity<>(updatedPaths, HttpStatus.OK);
+            return DimensionTools.toFront(threeService,uploaded_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

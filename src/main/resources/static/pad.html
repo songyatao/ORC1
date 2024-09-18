@@ -8,14 +8,14 @@
 <body>
 <h1>Upload Image</h1>
 <form id="uploadForm">
-    <input type="file" id="imageFile" accept="image/*" />
+    <input type="file" id="imageFile" accept="image/*"/>
     <button type="button" onclick="uploadImage()">Upload</button>
 </form>
 <div id="status"></div>
 <div id="imagePreview"></div>
 <button type="button" onclick="fetchResults()">Show Results</button>
 <div id="results"></div>
-
+<button type="button" onclick="downloadWord()">Download Word</button>
 <script>
     function uploadImage() {
         const fileInput = document.getElementById('imageFile');
@@ -44,7 +44,7 @@
 
     function displayImage(file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const img = document.createElement('img');
             img.src = e.target.result;
             img.style.maxWidth = '500px';
@@ -57,7 +57,15 @@
     }
 
     function fetchResults() {
-        fetch('http://localhost:8080/case/1/results?uploadedId=89')
+        fetch('http://localhost:8080/case/1/results', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', // Set content type
+            },
+            body: new URLSearchParams({
+                uploadedId: 92 // Pass the uploadedId as a parameter in the body
+            })
+        })
             .then(response => response.json())
             .then(results => {
                 const resultsDiv = document.getElementById('results');
@@ -65,7 +73,7 @@
 
                 results.forEach(result => {
                     const img = document.createElement('img');
-                    img.src = `http://localhost:8080/images/${result}`; // Ensure the URL matches your server's static files path
+                    img.src = result; // Use the URL directly from the results
                     img.style.maxWidth = '100px';
                     img.style.maxHeight = '100px';
                     resultsDiv.appendChild(img);
@@ -73,6 +81,27 @@
             })
             .catch(error => {
                 document.getElementById('status').innerText = 'Failed to fetch results';
+                console.error('Error:', error);
+            });
+    }
+
+    function downloadWord() {
+        fetch('http://localhost:8080/case/result/1/img1/downloadWord', {
+            method: 'GET',
+        })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'document.docx'; // Default file name
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                document.getElementById('status').innerText = 'Failed to download Word document';
                 console.error('Error:', error);
             });
     }

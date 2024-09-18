@@ -2,9 +2,8 @@ package com.zb.controller;
 
 import com.zb.service.TwoService;
 import com.zb.service.UploadedService;
-import com.zb.tools.AppRootPath;
 import com.zb.tools.CallTwo;
-import com.zb.tools.DimensionToDB;
+import com.zb.tools.DimensionTools;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,12 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 /**
  * @auther 宋亚涛
@@ -37,10 +33,12 @@ public class TwoController {
     @Autowired
     private UploadedService uploadedService;
 
+    //对识别成功的结果进行二维处理
     @PostMapping("/{caseId}/{fileName}/two")
     public ResponseEntity<?> twoDimensional(@PathVariable("caseId") int caseId,
                                             @PathVariable("fileName") String fileName) throws IOException {
 
+        System.out.println("123");
         Map<String, String> response = new HashMap<>();
 
         BufferedReader in = null;
@@ -90,7 +88,26 @@ public class TwoController {
 //            e.printStackTrace();
 //            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
-        return DimensionToDB.toDB(caseId, fileName, uploadedService, twoService, "two_dimensional");
+        return DimensionTools.toDB(caseId, fileName, uploadedService, twoService, "two_dimensional");
 
+    }
+
+
+    //将二位结果返回给前端
+    @PostMapping("/result/{caseId}/{uploaded_id}/two")
+    public ResponseEntity<List<String>> getImages(@PathVariable int uploaded_id) {
+        try {
+//            List<String> imageUrls = twoService.getAllImageUrlsByUploadedId(uploaded_id); // Adjust method as needed
+//            String baseUrl = "http://localhost:8080/";
+//            List<String> updatedPaths = imageUrls.stream()
+//                    .map(path -> path.replace("D:\\SWork\\OCR_Demo\\src\\main\\resources\\static\\", baseUrl))
+//                    .collect(Collectors.toList());
+////            System.out.println(updatedPaths);
+//            return new ResponseEntity<>(updatedPaths, HttpStatus.OK);
+            return  DimensionTools.toFront(twoService, uploaded_id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

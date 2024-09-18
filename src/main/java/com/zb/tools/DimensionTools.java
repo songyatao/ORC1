@@ -9,13 +9,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * @auther 宋亚涛
  * @verson 1.0
  */
-public class DimensionToDB {
+public class DimensionTools {
     public static ResponseEntity<?> toDB(int caseId, String fileName, UploadedService uploadedService, BaseService service, String flag) {
         String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\" + "picture";
         Path baseDirectoryPath = Paths.get(basePath);
@@ -42,5 +44,15 @@ public class DimensionToDB {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public static ResponseEntity<List<String>> toFront(BaseService service, int uploaded_id) {
+        List<String> imageUrls = service.getAllImageUrlsByUploadedId(uploaded_id); // Adjust method as needed
+        String baseUrl = "http://localhost:8080/";
+        List<String> updatedPaths = imageUrls.stream()
+                .map(path -> path.replace("D:\\SWork\\OCR_Demo\\src\\main\\resources\\static\\", baseUrl))
+                .collect(Collectors.toList());
+//            System.out.println(updatedPaths);
+        return new ResponseEntity<>(updatedPaths, HttpStatus.OK);
     }
 }

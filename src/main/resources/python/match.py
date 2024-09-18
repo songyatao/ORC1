@@ -91,8 +91,10 @@ def main():
     # picture_dir = r'.\result\picture'
     # picture_dir = "D:\\Work\\OCR_Demo\\result\\picture"
     picture_dir = sys.argv[2]
+
+    result_dir = sys.argv[3]
     # 匹配文件夹路径
-    match_dir = os.path.join(current_dir, 'result', 'match')
+    match_dir = os.path.join(current_dir, result_dir, 'match')
 
     # 查找具有共同汉字字符的文件夹
     folder_pairs_with_common_chars = find_folders_with_common_chars(picture_dir)
