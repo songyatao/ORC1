@@ -13,4 +13,6 @@ import org.apache.ibatis.annotations.Param;
 public interface CaseMapper {
     @Insert("insert into `case`(title,description,created_at) values (#{title}, #{description},NOW())")
     void add(@Param("title") String title,@Param("description") String description);//新增案件
+
+    //查找案件名称
 }

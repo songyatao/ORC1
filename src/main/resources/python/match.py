@@ -77,9 +77,11 @@ def copy_images_from_folders(folder_pairs, dest_dir):
             for file_name in os.listdir(folder):
                 file_path = os.path.join(folder, file_name)
                 if os.path.isfile(file_path) and file_name.lower().endswith(('.jpg', '.jpeg', '.png')):
-                    shutil.copy(file_path, new_folder_path)
-                    print(f"Copied {file_name} from '{folder}' to '{new_folder_path}'.")
-        print(f"Finished copying images from '{folder1}' and '{folder2}'.")
+                    new_file_name = f"{os.path.splitext(file_name)[0]}_match{os.path.splitext(file_name)[1]}"
+                    new_file_path = os.path.join(new_folder_path, new_file_name)
+                    shutil.copy(file_path, new_file_path)
+                    print(f"Copied {file_name} from '{folder}' to '{new_file_path}'.")
+            print(f"Finished copying images from '{folder1}' and '{folder2}'.")
 
 
 def main():
@@ -103,6 +105,7 @@ def main():
     copy_images_from_folders(folder_pairs_with_common_chars, match_dir)
 
     print("Finished processing images.")
+
 
 if __name__ == "__main__":
     main()

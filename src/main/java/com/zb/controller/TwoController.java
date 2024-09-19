@@ -38,7 +38,6 @@ public class TwoController {
     public ResponseEntity<?> twoDimensional(@PathVariable("caseId") int caseId,
                                             @PathVariable("fileName") String fileName) throws IOException {
 
-        System.out.println("123");
         Map<String, String> response = new HashMap<>();
 
         BufferedReader in = null;

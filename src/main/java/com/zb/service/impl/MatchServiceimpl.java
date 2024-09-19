@@ -1,8 +1,7 @@
 package com.zb.service.impl;
 
-import com.zb.mapper.ColorMapper;
-import com.zb.service.ColorService;
-import org.apache.ibatis.annotations.Select;
+import com.zb.mapper.MatchMapper;
+import com.zb.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +12,17 @@ import java.util.List;
  * @verson 1.0
  */
 @Service
-public class ColorServiceimpl implements ColorService {
+public class MatchServiceimpl implements MatchService {
     @Autowired
-    private ColorMapper colorMapper;
+    private MatchMapper matchMapper;
 
     @Override
     public void insert(int uploaded_id, String file_path) {
-        colorMapper.add(uploaded_id, file_path);
+        matchMapper.add(uploaded_id, file_path);
     }
 
     @Override
     public List<String> getAllImageUrlsByUploadedId(int uploadedId) {
-        return colorMapper.getCropsByUploadedId(uploadedId);
+        return matchMapper.getCropsByUploadedId(uploadedId);
     }
 }
