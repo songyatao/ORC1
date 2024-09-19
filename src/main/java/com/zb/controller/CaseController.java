@@ -145,7 +145,8 @@ public class CaseController {
         List<String> imageUrls = cropService.getCropsByUploadedId(uploadedId);
         String baseUrl = "http://localhost:8080/";
         List<String> updatedPaths = imageUrls.stream()
-                .map(path -> path.replace("D:\\SWork\\OCR_Demo\\src\\main\\resources\\static\\", baseUrl))
+                .map(path -> path.replace("D:\\SWork\\OCR_Demo\\src\\main\\resources\\static\\", baseUrl)
+                        .replace("\\", "/"))
                 .collect(Collectors.toList());
         System.out.println(updatedPaths);
         return new ResponseEntity<>(updatedPaths, HttpStatus.OK);

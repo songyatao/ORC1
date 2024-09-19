@@ -59,8 +59,6 @@ public class TwoController {
         }
 
 
-
-
         //将二维结果保存到数据库
 //        String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\" + "picture";
 //        Path baseDirectoryPath = Paths.get(basePath);

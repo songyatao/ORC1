@@ -9,13 +9,13 @@ import java.io.File;
 public class AppRootPath {
     public static String getappRootPath_ori() {
         String appRootPath = System.getProperty("user.dir");//D:\SWork\OCR_Demo
-        String filePath = appRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static/images/ori" + File.separator;
+        String filePath = appRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static\\images\\ori" + File.separator;
         return filePath;
     }
 
     public static String getappRootPath_result() {
         String appRootPath = System.getProperty("user.dir");//D:\SWork\OCR_Demo
-        String filePath = appRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static/images/result" + File.separator;
+        String filePath = appRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static\\images\\result" + File.separator;
         return filePath;
     }
 
@@ -27,7 +27,7 @@ public class AppRootPath {
 
     public static String getappRootPath_images() {
         String appRootPath = System.getProperty("user.dir");//D:\SWork\OCR_Demo
-        String filePath = appRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static/images" + File.separator;
+        String filePath = appRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static\\images" + File.separator;
         return filePath;
     }
 }

@@ -50,9 +50,10 @@ public class DimensionTools {
         List<String> imageUrls = service.getAllImageUrlsByUploadedId(uploaded_id); // Adjust method as needed
         String baseUrl = "http://localhost:8080/";
         List<String> updatedPaths = imageUrls.stream()
-                .map(path -> path.replace("D:\\SWork\\OCR_Demo\\src\\main\\resources\\static\\", baseUrl))
+                .map(path -> path.replace("D:\\SWork\\OCR_Demo\\src\\main\\resources\\static\\", baseUrl)
+                        .replace("\\", "/"))
                 .collect(Collectors.toList());
-//            System.out.println(updatedPaths);
+        System.out.println(updatedPaths);
         return new ResponseEntity<>(updatedPaths, HttpStatus.OK);
     }
 }
