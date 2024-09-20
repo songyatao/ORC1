@@ -1,6 +1,7 @@
 package com.zb.service;
 
 import com.zb.entity.Crop;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,6 +10,10 @@ import java.util.List;
  * @verson 1.0
  */
 public interface CropService {
-    Crop createCrop(int uploaded_id, String file_path);
+    Crop createCrop(int uploaded_id, String file_path, String file_name, int case_file_id, int case_id);
+
     List<String> getCropsByUploadedId(int uploaded_id);
+
+    List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id);
+
 }

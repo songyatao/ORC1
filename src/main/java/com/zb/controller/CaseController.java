@@ -4,6 +4,7 @@ import com.zb.Result.Result;
 import com.zb.entity.Case;
 import com.zb.entity.Crop;
 import com.zb.service.CaseService;
+import com.zb.service.CasefileService;
 import com.zb.service.CropService;
 import com.zb.service.UploadedService;
 import com.zb.tools.AppRootPath;
@@ -54,6 +55,9 @@ public class CaseController {
     private UploadedService uploadedService;
     @Autowired
     private CropService cropService;
+    @Autowired
+    CasefileService casefileService;
+    private Map<Integer, Integer> uploadCounts = new HashMap<>();
 
     private CropTool cropTool = null;
 
@@ -74,58 +78,55 @@ public class CaseController {
 
         Map<String, String> response = new HashMap<>();
 
+
         if (file.isEmpty()) { // 上传的图片文件为空
-//            response.put("message", "No file uploaded");
             return new ResponseEntity<>("Invalid file", HttpStatus.BAD_REQUEST);
-//            return "文件为空";
         }
 
         String fileName = file.getOriginalFilename();
-//        D:\SWork\OCR_Demo\src\main\resources\static\images\ori\img1.png
         String file_path = AppRootPath.getappRootPath_ori() + fileName;
         File destinationFile = new File(file_path);
 
         try {
-            file.transferTo(destinationFile); // 保存图片到本地
-            //保存图片到数据库==================
+            file.transferTo(destinationFile); // 保存上传的图片到本地
+            //保存上传的图片到数据库
             uploadedService.createUpload(caseId, file_path);
 
 
-            //调用python程序
-//            String arg1 = "D:\\SWork\\OCR_Demo\\src\\main\\resources\\ori\\" + fileName;
-//            String arg2 = "D:\\SWork\\OCR_Demo\\src\\main\\resources\\result";
-//            String[] args1 = new String[]{"python","D:\\SWork\\python\\pad_test.py",arg1,arg2};
-//            Process proc = Runtime.getRuntime().exec(args1);
-//            in = new BufferedReader(new InputStreamReader(proc.getInputStream(),"gbk"));
-//            StringBuilder sb = new StringBuilder();
-//            String line = null;
-//            while((line = in.readLine())!=null){
-//                sb.append(line);
-//            }
-//            proc.waitFor();
-//            System.out.println(sb.toString());
-
-            CallPad_test.Call(fileName, in, caseId);//调用python程序
-
-            //调用python程序后，剪裁后的图片已经保存到本地文件夹
-            //问题：所有结果都保存在同一个文件夹，保存到数据库怎么区分==================
-//                  可以用caseID/imagename文件夹区分不同案例的不同剪裁结果 √
-            //将各自案件各自图片的剪裁结果保存各自的数据库中
-
-            cropTool = new CropTool();
-            cropTool.CropToDB(fileName, caseId, uploadedService, cropService);
+            CallPad_test.Call(fileName, in, caseId);//调用python程序,剪裁后的图片保存到相应案件的文件夹中
 
 
-//            response.put("message", "File uploaded successfully");
+            // 增加上传计数
+            uploadCounts.put(caseId, uploadCounts.getOrDefault(caseId, 0) + 1);
+
+            if (uploadCounts.get(caseId) == 2) {
+
+                //把结果的文件夹名字以及地址保存到数据库
+                String directoryPath = AppRootPath.getappRootPath_result() + caseId + "\\picture";
+                File directory = new File(directoryPath);
+                if (directory.isDirectory()) {
+                    File[] subfolders = directory.listFiles(File::isDirectory);
+                    if (subfolders != null) {
+                        for (File subfolder : subfolders) {
+                            String folderName = subfolder.getName();
+                            String folderPath = subfolder.getAbsolutePath();
+                            casefileService.insert(folderName, folderPath, caseId);//文件名，文件路径入库
+                        }
+                    }
+                } else {
+                    System.out.println("Provided path is not a directory.");
+                }
+                cropTool = new CropTool();
+                cropTool.CropToDB(fileName, caseId, uploadedService, cropService, casefileService);
+                // 重置计数
+                uploadCounts.put(caseId, 0);
+            }
             return new ResponseEntity<>(response, HttpStatus.OK);
-//            System.out.println("123456");
-//            return "图片上传成功，并且成功执行了pad_test.py";
 
         } catch (Exception e) {
             e.printStackTrace();
-//            response.put("message", "Error saving file");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//            return "异常";
+
         } finally {
             if (in != null) {
                 try {
@@ -137,27 +138,11 @@ public class CaseController {
         }
     }
 
-
-    //返回识别成功的结果给前端
-    @PostMapping("/{caseId}/results")
-    public ResponseEntity<List<String>> getResults(@RequestParam int uploadedId) {
-
-        List<String> imageUrls = cropService.getCropsByUploadedId(uploadedId);
-        String baseUrl = "http://localhost:8080/";
-        List<String> updatedPaths = imageUrls.stream()
-                .map(path -> path.replace("D:\\SWork\\OCR_Demo\\src\\main\\resources\\static\\", baseUrl)
-                        .replace("\\", "/"))
-                .collect(Collectors.toList());
-        System.out.println(updatedPaths);
-        return new ResponseEntity<>(updatedPaths, HttpStatus.OK);
-    }
-
     //下载识别成功的word文档
-    @GetMapping("/result/{caseId}/{fileName}/downloadWord")
-    public ResponseEntity<InputStreamResource> downloadWord(@PathVariable("caseId") int caseId,
-                                                            @PathVariable("fileName") String fileName) {
+    @GetMapping("/result/{caseId}/downloadWord")
+    public ResponseEntity<InputStreamResource> downloadWord(@PathVariable("caseId") int caseId) {
         // 本地文件路径，请根据实际文件路径修改
-        String filePath = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\picture";
+        String filePath = AppRootPath.getappRootPath_result() + caseId + "\\picture";
         String result = WordFileFinder.findWordFile(filePath);
 
         System.out.println(result);
@@ -181,5 +166,25 @@ public class CaseController {
         }
     }
 
+
+    //点击“显示结果”按钮，把文件夹名字返回给前端，前端把这些名字做成按钮
+    @GetMapping("/{caseId}/results")
+    public ResponseEntity<List<String>> createFileNameButton(@PathVariable("caseId") int caseId) {
+        List<String> fileNames = casefileService.getNames(caseId);
+        return ResponseEntity.ok(fileNames); // 返回fileNames
+    }
+
+    @GetMapping("/{caseId}/{case_file_id}/results")
+    public ResponseEntity<List<String>> createFileNameButton(@PathVariable("caseId") int caseId,
+                                                             @PathVariable("case_file_id") int id) {
+        List<String> imageUrls = cropService.getCropsByCaseIdAndFileId(caseId, id);
+        String baseUrl = "http://localhost:8080/";
+        List<String> updatedPaths = imageUrls.stream()
+                .map(path -> path.replace(AppRootPath.getappRootPath_static(), baseUrl)
+                        .replace("\\", "/"))
+                .collect(Collectors.toList());
+        System.out.println(updatedPaths);
+        return ResponseEntity.ok(updatedPaths);
+    }
 }
 

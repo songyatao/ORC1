@@ -15,9 +15,11 @@ import java.util.List;
 public class ThreeServiceimpl implements ThreeService {
     @Autowired
     private ThreeMapper threeMapper;
+
+
     @Override
-    public void insert(int uploaded_id, String file_path) {
-        threeMapper.add(uploaded_id,file_path);
+    public void insert(int case_id, String file_path, String file_name, int case_file_id) {
+
     }
 
     @Override

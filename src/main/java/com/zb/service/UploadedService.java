@@ -12,4 +12,7 @@ public interface UploadedService {
     int findIdByPath(String path);
 
     int findIdByCaseIdAndName(int caseId, String name);
+    int findIdByCaseId(int caseId);
+
+    String findFileNameByCaseId(int caseId);
 }

@@ -18,12 +18,18 @@ public class TwoServiceimpl implements TwoService {
 
 
     @Override
-    public void insert(int uploaded_id, String file_path) {
-        twoMapper.add(uploaded_id, file_path);
+    public void insert(int case_id, String file_path, String file_name, int case_file_id) {
+        twoMapper.add(case_id, file_path, file_name, case_file_id);
     }
 
     @Override
-    public List<String> getAllImageUrlsByUploadedId(int uploaded_id) {
-        return  twoMapper.getCropsByUploadedId(uploaded_id);
+    public List<String> getAllImageUrlsByUploadedId(int uploadedId) {
+        return null;
+    }
+
+
+    @Override
+    public List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id) {
+        return twoMapper.getCropsByUploadedId(case_id, case_file_id);
     }
 }

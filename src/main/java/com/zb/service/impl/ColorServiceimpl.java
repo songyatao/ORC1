@@ -17,9 +17,10 @@ public class ColorServiceimpl implements ColorService {
     @Autowired
     private ColorMapper colorMapper;
 
+
     @Override
-    public void insert(int uploaded_id, String file_path) {
-        colorMapper.add(uploaded_id, file_path);
+    public void insert(int case_id, String file_path, String file_name, int case_file_id) {
+
     }
 
     @Override

@@ -17,12 +17,13 @@ import java.nio.file.Paths;
 public class UploadedServiceimpl implements UploadedService {
     @Autowired
     private UploadedMapper uploadedMapper;
+
     @Override
     public Uploaded createUpload(int caseId, String file_path) {
         Path path = Paths.get(file_path);
         String fileNameWithExtension = path.getFileName().toString();
         String file_name = fileNameWithExtension.substring(0, fileNameWithExtension.lastIndexOf('.'));
-        uploadedMapper.add(caseId, file_path,file_name);
+        uploadedMapper.add(caseId, file_path, file_name);
         return null;
     }
 
@@ -34,7 +35,17 @@ public class UploadedServiceimpl implements UploadedService {
 
     @Override
     public int findIdByCaseIdAndName(int caseId, String name) {
-        return uploadedMapper.findIdByCaseIdAndName(caseId,name);
+        return uploadedMapper.findIdByCaseIdAndName(caseId, name);
+    }
+
+    @Override
+    public int findIdByCaseId(int caseId) {
+        return uploadedMapper.findIdByCaseId(caseId);
+    }
+
+    @Override
+    public String findFileNameByCaseId(int caseId) {
+        return uploadedMapper.findFileNameByCaseId(caseId);
     }
 
 }

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上传图片</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<h1>上传图片</h1>
+
+<div>
+    <h2>上传第一张图片</h2>
+    <input type="file" id="image1" accept="image/*">
+    <button onclick="uploadImage1()">上传第一张</button>
+</div>
+
+<div>
+    <h2>上传第二张图片</h2>
+    <input type="file" id="image2" accept="image/*">
+    <button onclick="uploadImage2()">上传第二张</button>
+</div>
+
+<div id="results" style="margin-top: 20px;">
+    <h2>剪裁结果文件夹</h2>
+    <div id="folderButtons"></div>
+</div>
+
+<div id="cropResults" style="margin-top: 20px;"></div>
+
+<div id="uploadedImages" style="margin-top: 20px;">
+    <h2>上传的图片</h2>
+</div>
+
+<button id="showResultsBtn" onclick="displayResults()">显示结果</button>
+
+<script>
+    const caseId = 1; // 替换为实际的caseId
+
+    async function uploadImage1() {
+        const file1 = document.getElementById('image1').files[0];
+        if (!file1) {
+            alert("请上传第一张图片");
+            return;
+        }
+        await uploadImage(file1);
+        displayUploadedImage(file1);
+    }
+
+    async function uploadImage2() {
+        const file2 = document.getElementById('image2').files[0];
+        if (!file2) {
+            alert("请上传第二张图片");
+            return;
+        }
+        await uploadImage(file2);
+        displayUploadedImage(file2);
+    }
+
+    async function uploadImage(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            await axios.post(`http://localhost:8080/case/1/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+        } catch (error) {
+            console.error("上传失败:", error);
+        }
+    }
+
+    async function displayResults() {
+        try {
+            const response = await axios.get(`http://localhost:8080/case/1/results`);
+            const fileNames = response.data;
+
+            const folderButtons = document.getElementById('folderButtons');
+            folderButtons.innerHTML = '';
+
+            fileNames.forEach(fileName => {
+                const button = document.createElement('button');
+                button.textContent = fileName;
+                button.onclick = () => viewCropResults(fileName);
+                folderButtons.appendChild(button);
+            });
+        } catch (error) {
+            console.error("获取结果失败:", error);
+        }
+    }
+
+    async function viewCropResults(fileName) {
+        try {
+            const response = await axios.get(`http://localhost:8080/case/1/96/results`);
+            const resultsDiv = document.getElementById('cropResults');
+            resultsDiv.innerHTML = `<h3>${fileName} 剪裁结果:</h3>`;
+
+            response.data.forEach(file => {
+                const timestamp = new Date().getTime(); // 获取当前时间戳
+                const img = document.createElement('img');
+                img.src = `${file}?t=${timestamp}`; // 添加时间戳
+                img.style.width = '200px';
+                img.onerror = () => {
+                    console.error("图片加载失败:", img.src);
+                    img.src = 'path/to/placeholder.jpg'; // 可选：设置一个占位符图片
+                };
+                resultsDiv.appendChild(img);
+            });
+        } catch (error) {
+            console.error("查看剪裁结果失败:", error);
+        }
+    }
+
+    function displayUploadedImage(file) {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file); // 使用 File 对象创建图片 URL
+        img.style.width = '200px';
+        img.style.margin = '5px';
+
+        const uploadedImagesDiv = document.getElementById('uploadedImages');
+        uploadedImagesDiv.appendChild(img); // 将图片添加到上传图片的容器中
+    }
+</script>
+</body>
+</html>

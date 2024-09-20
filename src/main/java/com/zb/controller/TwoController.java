@@ -1,7 +1,9 @@
 package com.zb.controller;
 
+import com.zb.service.CasefileService;
 import com.zb.service.TwoService;
 import com.zb.service.UploadedService;
+import com.zb.tools.AppRootPath;
 import com.zb.tools.CallTwo;
 import com.zb.tools.DimensionTools;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @auther 宋亚涛
@@ -32,19 +35,19 @@ public class TwoController {
     private TwoService twoService;
     @Autowired
     private UploadedService uploadedService;
+    @Autowired
+    private CasefileService casefileService;
 
     //对识别成功的结果进行二维处理
-    @PostMapping("/{caseId}/{fileName}/two")
-    public ResponseEntity<?> twoDimensional(@PathVariable("caseId") int caseId,
-                                            @PathVariable("fileName") String fileName) throws IOException {
+    @PostMapping("/{caseId}/two")
+    public ResponseEntity<?> twoDimensional(@PathVariable("caseId") int caseId) throws IOException {
 
         Map<String, String> response = new HashMap<>();
 
         BufferedReader in = null;
 
-        //调用 Two_Dimensional_recognition.py
         try {
-            CallTwo.Call(in, caseId, fileName);
+            CallTwo.Call(in, caseId);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -59,52 +62,22 @@ public class TwoController {
         }
 
 
-        //将二维结果保存到数据库
-//        String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\" + "picture";
-//        Path baseDirectoryPath = Paths.get(basePath);
-//
-//        try (Stream<Path> subDirectories = Files.walk(baseDirectoryPath, 1)) { // 仅遍历一级子目录
-//            subDirectories.filter(Files::isDirectory).forEach(subDir -> {
-//                Path twoDimensionalPath = subDir.resolve("two_dimensional");
-//                if (Files.exists(twoDimensionalPath) && Files.isDirectory(twoDimensionalPath)) {
-//                    try (Stream<Path> imageFiles = Files.walk(twoDimensionalPath)) {
-//                        imageFiles.filter(Files::isRegularFile).forEach(entry -> {
-//                            // 通过fileName 和 caseId 查找uploaded_id
-//                            int uploaded_id = uploadedService.findIdByCaseIdAndName(caseId, fileName);
-//                            // 处理每个图片文件
-//                            twoService.insertTwo(uploaded_id, entry.toString());
-//                        });
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-        return DimensionTools.toDB(caseId, fileName, uploadedService, twoService, "two_dimensional");
+        return DimensionTools.toDB(caseId, uploadedService, twoService, casefileService, "two_dimensional");
 
     }
 
 
-    //将二位结果返回给前端
-    @PostMapping("/result/{caseId}/{uploaded_id}/two")
-    public ResponseEntity<List<String>> getImages(@PathVariable int uploaded_id) {
-        try {
-//            List<String> imageUrls = twoService.getAllImageUrlsByUploadedId(uploaded_id); // Adjust method as needed
-//            String baseUrl = "http://localhost:8080/";
-//            List<String> updatedPaths = imageUrls.stream()
-//                    .map(path -> path.replace("D:\\SWork\\OCR_Demo\\src\\main\\resources\\static\\", baseUrl))
-//                    .collect(Collectors.toList());
-////            System.out.println(updatedPaths);
-//            return new ResponseEntity<>(updatedPaths, HttpStatus.OK);
-            return  DimensionTools.toFront(twoService, uploaded_id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+    @GetMapping("/{caseId}/{case_file_id}/two/results")
+    public ResponseEntity<List<String>> createFileNameButton(@PathVariable("caseId") int caseId,
+                                                             @PathVariable("case_file_id") int id) {
+        List<String> imageUrls = twoService.getCropsByCaseIdAndFileId(caseId, id);
+        String baseUrl = "http://localhost:8080/";
+        List<String> updatedPaths = imageUrls.stream()
+                .map(path -> path.replace(AppRootPath.getappRootPath_static(), baseUrl)
+                        .replace("\\", "/"))
+                .collect(Collectors.toList());
+        System.out.println(updatedPaths);
+        return ResponseEntity.ok(updatedPaths);
     }
 }

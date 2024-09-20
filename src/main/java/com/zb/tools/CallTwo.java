@@ -11,10 +11,9 @@ import java.nio.file.Paths;
  * @verson 1.0
  */
 public class CallTwo {
-    public static void Call(BufferedReader in, int caseId, String fileName) throws IOException, InterruptedException {
+    public static void Call(BufferedReader in, int caseId) throws IOException, InterruptedException {
 
-//        String arg1 = "D:\\SWork\\OCR_Demo\\src\\main\\resources\\result\\1\\img1\\picture";
-        String arg = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\" + "picture";
+        String arg = AppRootPath.getappRootPath_result() + caseId + "\\" + "picture";
         String pythonPath = AppRootPath.getappRootPath_python() + "Two_Dimensional_recognition.py";
         CallTools.Call(arg, pythonPath, in);
     }

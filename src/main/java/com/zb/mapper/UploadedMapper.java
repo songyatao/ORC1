@@ -21,4 +21,10 @@ public interface UploadedMapper {
 
     @Select("select id from uploaded where case_id = #{caseId} and file_name = #{name}")
     int findIdByCaseIdAndName(@Param("caseId") int caseId,@Param("name") String name);
+
+    @Select("select id from uploaded where case_id = #{caseId}")
+    int findIdByCaseId(@Param("caseId") int caseId);
+
+    @Select("select file_name from uploaded where case_id = #{caseId}")
+    String findFileNameByCaseId(@Param("caseId") int caseId);
 }

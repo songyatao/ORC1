@@ -9,4 +9,6 @@ import java.util.List;
  * @verson 1.0
  */
 public interface TwoService extends BaseService{
+
+    List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id);
 }

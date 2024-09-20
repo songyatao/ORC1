@@ -30,4 +30,9 @@ public class AppRootPath {
         String filePath = appRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static\\images" + File.separator;
         return filePath;
     }
+    public static String getappRootPath_static() {
+        String appRootPath = System.getProperty("user.dir");//D:\SWork\OCR_Demo
+        String filePath = appRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator;
+        return filePath;
+    }
 }
