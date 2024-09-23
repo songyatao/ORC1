@@ -9,9 +9,8 @@ import java.io.InputStreamReader;
  * @verson 1.0
  */
 public class CallThree {
-    public static void Call(BufferedReader in, int caseId, String fileName) throws IOException, InterruptedException {
-//        String arg1 = "D:\\SWork\\OCR_Demo\\src\\main\\resources\\result\\1\\img1\\picture";
-        String arg = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\" + "picture";
+    public static void Call(BufferedReader in, int caseId) throws IOException, InterruptedException {
+        String arg = AppRootPath.getappRootPath_result() + caseId + "\\" + "picture";
         String pythonPath = AppRootPath.getappRootPath_python() + "Three_Dimensional_recognition.py";
         CallTools.Call(arg,pythonPath,in);
     }

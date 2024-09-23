@@ -33,7 +33,7 @@ public class DimensionTools {
 
                             String file_path = entry.toString();
                             String file_name = file_path.substring(file_path.lastIndexOf("\\") + 1).replace(".jpg", "");
-                            String directory = file_path.substring(0, file_path.lastIndexOf("\\two_dimensional"));
+                            String directory = file_path.substring(0, file_path.lastIndexOf("\\" + flag));
                             System.out.println(file_path);
                             int case_file_id = casefileService.getIdByPath(directory);
                             // 处理每个图片文件

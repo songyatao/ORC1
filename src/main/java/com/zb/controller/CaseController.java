@@ -80,6 +80,9 @@ public class CaseController {
         //删除id相同的案件
         caseService.removeById(id);
 
+        //删除two数据库
+        //删除three数据库
+
 
         //删除ori文件夹下的所有文件
         Path directory = Paths.get(AppRootPath.getappRootPath_ori());

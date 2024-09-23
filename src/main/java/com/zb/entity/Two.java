@@ -9,10 +9,12 @@ import java.util.UUID;
  * @verson 1.0
  */
 public class Two {
-    @Id
-    @GeneratedValue
-    private UUID id;
 
-    private int uploaded_id;
+    private Integer id;
+
+
+    private int case_id;
+    private int case_file_id;
     private String file_path;
+    private String file_name;
 }

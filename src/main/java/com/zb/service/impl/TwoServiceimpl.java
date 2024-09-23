@@ -30,6 +30,6 @@ public class TwoServiceimpl implements TwoService {
 
     @Override
     public List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id) {
-        return twoMapper.getCropsByUploadedId(case_id, case_file_id);
+        return twoMapper.getCropsByCaseIdAndFileId(case_id, case_file_id);
     }
 }

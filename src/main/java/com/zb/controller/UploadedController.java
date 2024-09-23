@@ -139,6 +139,9 @@ public class UploadedController {
         //根据uploadedId删除crop数据库
         cropService.deleteByUploadedId(uploadedId);
 
+        //删除two数据库
+        //删除three数据库
+
         //删除caseId文件夹下的所有文件
         Path directory1 = Paths.get(AppRootPath.getappRootPath_result() + caseId);
         try {

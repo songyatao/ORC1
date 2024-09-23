@@ -18,5 +18,7 @@ public interface TwoMapper {
 
 
     @Select("select file_path from `two` where case_id = #{case_id} and case_file_id = #{case_file_id}")
-    List<String> getCropsByUploadedId(@Param("case_id") int case_id,@Param("case_file_id") int case_file_id);//根据uploaded_id查找
+    List<String> getCropsByCaseIdAndFileId(@Param("case_id") int case_id,@Param("case_file_id") int case_file_id);
+
+
 }
