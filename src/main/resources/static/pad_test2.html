@@ -62,7 +62,7 @@
         formData.append('image', file);
 
         try {
-            await axios.post(`http://localhost:8080/case/1/upload`, formData, {
+            await axios.post(`http://localhost:8080/uploaded/1/add`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -74,7 +74,7 @@
 
     async function displayResults() {
         try {
-            const response = await axios.get(`http://localhost:8080/case/1/results`);
+            const response = await axios.get(`http://localhost:8080/casefile/1/results`);
             const fileNames = response.data;
 
             const folderButtons = document.getElementById('folderButtons');
@@ -93,7 +93,7 @@
 
     async function viewCropResults(fileName) {
         try {
-            const response = await axios.get(`http://localhost:8080/case/1/96/results`);
+            const response = await axios.get(`http://localhost:8080/crop/1/103/load`);
             const resultsDiv = document.getElementById('cropResults');
             resultsDiv.innerHTML = `<h3>${fileName} 剪裁结果:</h3>`;
 

@@ -1,9 +1,9 @@
 package com.zb.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zb.entity.Casefile;
+import com.zb.entity.Cases;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import java.util.List;
  * @verson 1.0
  */
 @Mapper
-public interface CasefileMapper {
-    @Insert("insert into `casefile`(file_name,file_path,case_id) values (#{file_name}, #{file_path},#{case_id})")
-    int add(@Param("file_name") String file_name, @Param("file_path") String file_path, @Param("case_id") int case_id);//新增二维结果
+public interface CasefileMapper extends BaseMapper<Casefile> {
+    @Insert("insert into `casefile`(file_name,file_path,case_id,uploaded_id) values (#{file_name}, #{file_path},#{case_id},#{uploaded_id})")
+    int add(@Param("file_name") String file_name, @Param("file_path") String file_path, @Param("case_id") int case_id, @Param("uploaded_id") int uploaded_id);//新增
 
     @Select("select id from `casefile` where file_name = #{file_name}")
     int getIdByName(@Param("file_name") String file_name);//根据uploaded_id查找
@@ -24,4 +24,10 @@ public interface CasefileMapper {
 
     @Select("select id from `casefile` where file_path = #{file_path}")
     int getIdByPath(@Param("file_path") String file_path);
+
+    @Delete("delete from `casefile` where uploaded_id = #{uploadedId}")
+    void deleteByUploadedId(@Param("uploadedId") int uploadedId);
+
+    @Delete("delete from `casefile` where case_id = #{caseId}")
+    void deleteByCaseId(@Param("caseId") int caseId);
 }

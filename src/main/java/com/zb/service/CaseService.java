@@ -1,17 +1,13 @@
 package com.zb.service;
 
-import com.zb.entity.Case;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.zb.entity.Cases;
 
 /**
  * @auther 宋亚涛
  * @verson 1.0
  */
-public interface CaseService {
-     String uploadImage(UUID caseId, MultipartFile file);
-    Case createCase(String title, String description);
+public interface CaseService extends IService<Cases> {
+    int add(String title, String description);//新增
+
 }

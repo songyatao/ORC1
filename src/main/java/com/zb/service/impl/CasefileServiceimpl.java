@@ -1,10 +1,16 @@
 package com.zb.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zb.entity.Casefile;
+import com.zb.entity.Cases;
+import com.zb.mapper.CaseMapper;
 import com.zb.mapper.CasefileMapper;
+import com.zb.service.CaseService;
 import com.zb.service.CasefileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -12,26 +18,21 @@ import java.util.List;
  * @verson 1.0
  */
 @Service
-public class CasefileServiceimpl implements CasefileService {
+public class CasefileServiceimpl extends ServiceImpl<CasefileMapper, Casefile> implements CasefileService {
     @Autowired
     private CasefileMapper casefileMapper;
 
-
     @Override
-    public void insert(int case_id, String file_path, String file_name, int case_file_id) {
-
+    public Integer insert(String file_name, String file_path, int case_id, int uploaded_id) {
+        Casefile casefile = new Casefile();
+        casefile.setFile_name(file_name);
+        casefile.setFile_path(file_path);
+        casefile.setCase_id(case_id);
+        casefile.setUploaded_id(uploaded_id);
+        casefileMapper.insert(casefile);
+        return casefile.getId();
     }
 
-    @Override
-    public List<String> getAllImageUrlsByUploadedId(int uploadedId) {
-        return null;
-    }
-
-
-    @Override
-    public void insert(String file_name, String file_path, int case_id) {
-        casefileMapper.add(file_name, file_path, case_id);
-    }
 
     @Override
     public int getIdByName(String file_name) {
@@ -47,4 +48,16 @@ public class CasefileServiceimpl implements CasefileService {
     public int getIdByPath(String file_path) {
         return casefileMapper.getIdByPath(file_path);
     }
+
+    @Override
+    public void deleteByUploadedId(int uploadedId) {
+        casefileMapper.deleteByUploadedId(uploadedId);
+    }
+
+    @Override
+    public void deleteByCaseId(int caseId) {
+        casefileMapper.deleteByCaseId(caseId);
+    }
+
+
 }

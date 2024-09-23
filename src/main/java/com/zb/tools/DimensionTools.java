@@ -1,5 +1,6 @@
 package com.zb.tools;
 
+import com.zb.Result.ResultBuilder;
 import com.zb.service.BaseService;
 import com.zb.service.CasefileService;
 import com.zb.service.UploadedService;
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
  * @verson 1.0
  */
 public class DimensionTools {
-    public static ResponseEntity<?> toDB(int caseId, UploadedService uploadedService, BaseService service, CasefileService casefileService, String flag) {
+    public static HttpResponse toDB(int caseId, UploadedService uploadedService, BaseService service, CasefileService casefileService, String flag) {
         String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + "picture";
         Path baseDirectoryPath = Paths.get(basePath);
 
@@ -44,10 +45,10 @@ public class DimensionTools {
                 }
             });
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResultBuilder.successNoData(ResultCode.SAVE_SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResultBuilder.faile(ResultCode.CODE_ERROR);
         }
     }
 

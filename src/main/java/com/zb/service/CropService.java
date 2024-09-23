@@ -16,4 +16,7 @@ public interface CropService {
 
     List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id);
 
+    void deleteByUploadedId(int uploadedId);
+
+    void deleteByCaseId(int caseId);
 }

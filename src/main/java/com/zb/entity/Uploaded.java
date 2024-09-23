@@ -11,9 +11,8 @@ import java.util.UUID;
  * @verson 1.0
  */
 public class Uploaded {
-    @Id
-    @GeneratedValue
-    private UUID id;
+
+    private Integer id;
     private int case_id;
 
     private LocalDateTime uploaded_at;

@@ -1,7 +1,5 @@
 package com.zb.service;
 
-import com.zb.entity.Case;
-
 import java.util.List;
 
 /**

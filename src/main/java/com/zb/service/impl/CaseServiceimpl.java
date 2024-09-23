@@ -1,39 +1,31 @@
 package com.zb.service.impl;
 
-import com.zb.entity.Case;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zb.entity.Cases;
 import com.zb.mapper.CaseMapper;
 import com.zb.service.CaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.codec.StringDecoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 /**
  * @auther 宋亚涛
  * @verson 1.0
  */
 @Service
-public class CaseServiceimpl implements CaseService {
-
+public class CaseServiceimpl extends ServiceImpl<CaseMapper, Cases> implements CaseService {
 
     @Autowired
-    private CaseMapper caseMapper;
+    CaseMapper caseMapper;
 
-    //    private final Path rootLocation = Paths.get("uploaded-images");
     @Override
-    public Case createCase(String title, String description) {
+    public int add(String title, String description) {
 
-        caseMapper.add(title,description);
-        return null;
+        Cases newCase = new Cases();
+        newCase.setTitle(title);
+        newCase.setDescription(description);
+
+        // 保存到数据库并返回生成的 ID
+        caseMapper.insert(newCase); // 假设这个方法会插入数据
+        return newCase.getId(); // 获取生成的 ID
     }
-    @Override
-    public String uploadImage(UUID caseId, MultipartFile file) {
-        return null;
-    }
-
-
 }

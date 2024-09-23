@@ -1,10 +1,7 @@
 package com.zb.mapper;
 
 import com.zb.entity.Crop;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -23,4 +20,10 @@ public interface CropMapper {
 
     @Select("select file_path from `crop` where case_id = #{case_id} and case_file_id = #{case_file_id}")
     List<String> getCropsByCaseIdAndFileId(@Param("case_id") int case_id,@Param("case_file_id") int case_file_id);//根据uploaded_id查找
+
+    @Delete("delete from `crop` where uploaded_id = #{uploadedId}")
+    void deleteByUploadedId(@Param("uploadedId") int uploadedId);
+
+    @Delete("delete from `crop` where case_id = #{caseId}")
+    void deleteByCaseId(@Param("caseId") int caseId);
 }
