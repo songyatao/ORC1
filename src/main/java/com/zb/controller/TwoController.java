@@ -39,10 +39,7 @@ public class TwoController {
 
     //对识别成功的结果进行二维处理,增
     @PostMapping("/add/{caseId}")
-    public HttpResponse twoDimensional(@PathVariable("caseId") int caseId) throws IOException {
-
-        Map<String, String> response = new HashMap<>();
-
+    public HttpResponse twoDimensional(@PathVariable("caseId") int caseId){
         BufferedReader in = null;
 
         try {

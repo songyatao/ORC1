@@ -73,12 +73,12 @@ for subfolder_name in os.listdir(folder_path):
             result_image = Image.blend(image, contour_image_pil, alpha=0.3)
 
             # 确保结果子文件夹存在
-            result_subfolder_path = os.path.join(subfolder_path, 'color')
+            result_subfolder_path = os.path.join(subfolder_path, 'rcolor')
             if not os.path.exists(result_subfolder_path):
                 os.makedirs(result_subfolder_path)
 
             # 组合结果子文件夹路径和文件名
-            result_path = os.path.join(result_subfolder_path, f'color_{image_file}')
+            result_path = os.path.join(result_subfolder_path, f'result_color_{image_file}')
 
             # 保存图像
             result_image.save(result_path)

@@ -9,9 +9,9 @@ import java.io.InputStreamReader;
  * @verson 1.0
  */
 public class CallHistogram {
-    public static void Call(BufferedReader in, int caseId, String fileName) throws IOException, InterruptedException {
-        String arg1 = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\picture";
-        String arg2 = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\image_statistics.png";
+    public static void Call(BufferedReader in, int caseId) throws IOException, InterruptedException {
+        String arg1 = AppRootPath.getappRootPath_result() + caseId + "\\picture";
+        String arg2 = AppRootPath.getappRootPath_result() + caseId + "\\image_statistics.png";
         String[] args1 = new String[]{"python", AppRootPath.getappRootPath_python() + "histogram.py", arg1, arg2};
         Process proc = Runtime.getRuntime().exec(args1);
         in = new BufferedReader(new InputStreamReader(proc.getInputStream(), "gbk"));

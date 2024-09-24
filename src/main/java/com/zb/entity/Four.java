@@ -9,10 +9,11 @@ import java.util.UUID;
  * @verson 1.0
  */
 public class Four {
-    @Id
-    @GeneratedValue
-    private UUID id;
+    private Integer id;
 
-    private int uploaded_id;
+
+    private Integer case_id;
+    private Integer case_file_id;
     private String file_path;
+    private String file_name;
 }

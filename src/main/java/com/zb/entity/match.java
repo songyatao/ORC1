@@ -9,10 +9,8 @@ import java.util.UUID;
  * @verson 1.0
  */
 public class match {
-    @Id
-    @GeneratedValue
-    private UUID id;
+    private Integer id;
 
-    private int uploaded_id;
+    private Integer uploaded_id;
     private String file_path;
 }

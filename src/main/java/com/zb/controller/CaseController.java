@@ -74,22 +74,25 @@ public class CaseController {
     //删除案件
     @DeleteMapping("/delete/{id}")
     public HttpResponse delete(@PathVariable Integer id) {
-        //删除uploaded数据库
-        uploadedService.deleteByCaseId(id);
-        //删除casefile数据库
-        casefileService.deleteByCaseId(id);
+
+
+        //删除two数据库
+        twoService.deleteByCaseId(id);
+        //删除three数据库
+        threeService.deleteByCaseId(id);
+        //删除four数据库
+        fourService.deleteByCaseId(id);
         //删除crop数据库
         cropService.deleteByCaseId(id);
+        //删除casefile数据库
+        casefileService.deleteByCaseId(id);
+
+        //删除uploaded数据库
+        uploadedService.deleteByCaseId(id);
+
         //删除id相同的案件
         caseService.removeById(id);
 
-        int caseId = uploadedService.findCaseIdById(id);
-        //删除two数据库
-        twoService.deleteByCaseId(caseId);
-        //删除three数据库
-        twoService.deleteByCaseId(caseId);
-        //删除four数据库
-        fourService.deleteByCaseId(caseId);
 
 
         //删除ori文件夹下的所有文件

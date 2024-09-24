@@ -38,7 +38,7 @@ public class FourController {
 
     //对识别成功的结果进行四维处理,增
     @PostMapping("/add/{caseId}")
-    public HttpResponse twoDimensional(@PathVariable("caseId") int caseId) {
+    public HttpResponse fourDimensional(@PathVariable("caseId") int caseId) {
         BufferedReader in = null;
         Map<String, String> response = new HashMap<>();
 

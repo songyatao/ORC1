@@ -9,10 +9,7 @@ import java.util.UUID;
  * @verson 1.0
  */
 public class Histogram {
-    @Id
-    @GeneratedValue
-    private UUID id;
-
-    private int uploaded_id;
+    private Integer id;
+    private Integer case_id;
     private String file_path;
 }

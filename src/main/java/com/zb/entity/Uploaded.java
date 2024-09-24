@@ -13,7 +13,7 @@ import java.util.UUID;
 public class Uploaded {
 
     private Integer id;
-    private int case_id;
+    private Integer case_id;
 
     private LocalDateTime uploaded_at;
 

@@ -12,8 +12,8 @@ public class Three {
     private Integer id;
 
 
-    private int case_id;
-    private int case_file_id;
+    private Integer case_id;
+    private Integer case_file_id;
     private String file_path;
     private String file_name;
 }
