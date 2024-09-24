@@ -33,11 +33,11 @@ public class CasefileServiceimpl extends ServiceImpl<CasefileMapper, Casefile> i
         return casefile.getId();
     }
 
-
     @Override
-    public int getIdByName(String file_name) {
-        return casefileMapper.getIdByName(file_name);
+    public int getIdByNameAndCaseId(String file_name, int case_id) {
+        return casefileMapper.getIdByNameAndCaseId(file_name,case_id);
     }
+
 
     @Override
     public List<String> getNames(int case_id) {

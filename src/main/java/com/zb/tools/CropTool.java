@@ -38,7 +38,7 @@ public class CropTool {
                                     .peek(imageFile -> {
                                         int uploadedId = uploadedService.findIdByCaseIdAndName(caseId, finalFileName);
                                         // 在此处将子文件夹名和图像文件存入数据库
-                                        int id = casefileService.getIdByName(folderName);
+                                        int id = casefileService.getIdByNameAndCaseId(folderName,caseId);
                                         String filePath = imageFile.toString();
                                         String image_name = filePath.substring(filePath.lastIndexOf("\\") + 1, filePath.lastIndexOf("."));
                                         cropService.createCrop(uploadedId, filePath, image_name, id, caseId); // 将子文件夹名作为参数

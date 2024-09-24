@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface ColorService extends BaseService {
     List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id);
+
+    void deleteByCaseId(int caseId);
 }

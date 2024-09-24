@@ -36,4 +36,9 @@ public class HistogramServiceimpl implements HistogramService {
     public List<String> getPathByCaseId(int case_id) {
         return histogramMapper.getPathByCaseId(case_id);
     }
+
+    @Override
+    public void deleteByCaseId(int caseId) {
+        histogramMapper.deleteByCaseId(caseId);
+    }
 }

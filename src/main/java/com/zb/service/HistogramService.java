@@ -12,4 +12,6 @@ public interface HistogramService extends BaseService {
     void add(int case_id, String file_path);//新增结果
 
     List<String> getPathByCaseId(int case_id);
+
+    void deleteByCaseId(int caseId);
 }

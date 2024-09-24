@@ -55,6 +55,10 @@ public class CaseController {
     private ThreeService threeService;
     @Autowired
     private FourService fourService;
+    @Autowired
+    private ColorService colorService;
+    @Autowired
+    private HistogramService histogramService;
 
     private Map<Integer, Integer> uploadCounts = new HashMap<>();
 
@@ -87,6 +91,10 @@ public class CaseController {
         //删除casefile数据库
         casefileService.deleteByCaseId(id);
 
+        //删除color数据库
+        colorService.deleteByCaseId(id);
+        //删除his数据库
+        histogramService.deleteByCaseId(id);
         //删除uploaded数据库
         uploadedService.deleteByCaseId(id);
 

@@ -42,6 +42,10 @@ public class UploadedController {
     private ThreeService threeService;
     @Autowired
     private FourService fourService;
+    @Autowired
+    private ColorService colorService;
+    @Autowired
+    private HistogramService histogramService;
     private Map<Integer, Integer> uploadCounts = new HashMap<>();
     private CropTool cropTool = null;
     String newFileName = null;
@@ -53,83 +57,158 @@ public class UploadedController {
             list.add(uploadedId);
             list.add(case_file_id);
      */
+//    @PostMapping("/{caseId}/add")
+//    public HttpResponse<List<Integer>> addPictureAndFileNameAndResult(@PathVariable("caseId") int caseId, @RequestParam("image") MultipartFile file) {
+//        BufferedReader in = null;
+//
+//        Integer uploadedId = null;
+//        Integer case_file_id = null;
+//        List<Integer> list = new ArrayList<>();
+//
+//
+//        if (file.isEmpty()) { // 上传的图片文件为空
+//            return ResultBuilder.faile(ResultCode.USER_NULL_PICTURE_ERROR);
+//        }
+//
+//        String fileName = file.getOriginalFilename();
+//        String file_path = AppRootPath.getappRootPath_ori() + fileName;
+//        File destinationFile = new File(file_path);
+//
+//        try {
+//            file.transferTo(destinationFile); // 保存上传的图片到本地
+//            //保存上传的图片到数据库
+//            uploadedService.createUpload(caseId, file_path);
+//
+//
+//            CallPad_test.Call(fileName, in, caseId);//调用python程序,剪裁后的图片保存到相应案件的文件夹中
+//
+//
+//            // 增加上传计数
+//            uploadCounts.put(caseId, uploadCounts.getOrDefault(caseId, 0) + 1);
+//
+//            if (uploadCounts.get(caseId) == 2) {
+//                int dotIndex = fileName.lastIndexOf('.');
+//                if (dotIndex > 0) {
+//                    newFileName = fileName.substring(0, dotIndex);
+//                }
+//                uploadedId = uploadedService.findIdByCaseIdAndName(caseId, newFileName);
+//
+//                //把结果的文件夹名字以及地址保存到数据库
+//                String directoryPath = AppRootPath.getappRootPath_result() + caseId + "\\picture";
+//                File directory = new File(directoryPath);
+//                if (directory.isDirectory()) {
+//                    File[] subfolders = directory.listFiles(File::isDirectory);
+//                    if (subfolders != null) {
+//                        for (File subfolder : subfolders) {
+//                            String folderName = subfolder.getName();
+//                            String folderPath = subfolder.getAbsolutePath();
+//
+//                            case_file_id = casefileService.insert(folderName, folderPath, caseId, uploadedId);//文件名，文件路径入库
+//                        }
+//                    }
+//                } else {
+//                    System.out.println("Provided path is not a directory.");
+//                }
+//                cropTool = new CropTool();
+//                cropTool.CropToDB(fileName, caseId, uploadedService, cropService, casefileService);
+//                System.out.println(uploadedId);
+//                System.out.println(case_file_id);
+//                list.add(uploadedId);
+//                list.add(case_file_id);
+//                // 重置计数
+//                uploadCounts.put(caseId, 0);
+//            }
+//            return ResultBuilder.success(list, ResultCode.SAVE_SUCCESS);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResultBuilder.faile(ResultCode.CODE_ERROR);
+//
+//        } finally {
+//            if (in != null) {
+//                try {
+//                    in.close();
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }
+//    }
+
     @PostMapping("/{caseId}/add")
-    public HttpResponse<List<Integer>> addPictureAndFileNameAndResult(@PathVariable("caseId") int caseId, @RequestParam("image") MultipartFile file) {
+    public HttpResponse<List<Integer>> addPictureAndFileNameAndResult(@PathVariable("caseId") int caseId, @RequestParam("images") List<MultipartFile> files) {
         BufferedReader in = null;
 
-        Map<String, String> response = new HashMap<>();
+        List<Integer> list = new ArrayList<>();
         Integer uploadedId = null;
         Integer case_file_id = null;
-        List<Integer> list = new ArrayList<>();
 
-
-        if (file.isEmpty()) { // 上传的图片文件为空
+        // 检查上传的文件是否为空
+        if (files.isEmpty() || files.stream().anyMatch(MultipartFile::isEmpty)) {
             return ResultBuilder.faile(ResultCode.USER_NULL_PICTURE_ERROR);
         }
 
-        String fileName = file.getOriginalFilename();
-        String file_path = AppRootPath.getappRootPath_ori() + fileName;
-        File destinationFile = new File(file_path);
+        for (MultipartFile file : files) {
+            String fileName = file.getOriginalFilename();
+            String file_path = AppRootPath.getappRootPath_ori() + fileName;
+            File destinationFile = new File(file_path);
 
-        try {
-            file.transferTo(destinationFile); // 保存上传的图片到本地
-            //保存上传的图片到数据库
-            uploadedService.createUpload(caseId, file_path);
+            try {
+                file.transferTo(destinationFile); // 保存上传的图片到本地
+                // 保存上传的图片到数据库
+                uploadedService.createUpload(caseId, file_path);
 
+                CallPad_test.Call(fileName, in, caseId); // 调用python程序
 
-            CallPad_test.Call(fileName, in, caseId);//调用python程序,剪裁后的图片保存到相应案件的文件夹中
+                // 增加上传计数
+                uploadCounts.put(caseId, uploadCounts.getOrDefault(caseId, 0) + 1);
 
+                System.out.println(uploadCounts.get(caseId) + "===========================");
 
-            // 增加上传计数
-            uploadCounts.put(caseId, uploadCounts.getOrDefault(caseId, 0) + 1);
-
-            if (uploadCounts.get(caseId) == 2) {
-                int dotIndex = fileName.lastIndexOf('.');
-                if (dotIndex > 0) {
-                    newFileName = fileName.substring(0, dotIndex);
-                }
-                uploadedId = uploadedService.findIdByCaseIdAndName(caseId, newFileName);
-
-                //把结果的文件夹名字以及地址保存到数据库
-                String directoryPath = AppRootPath.getappRootPath_result() + caseId + "\\picture";
-                File directory = new File(directoryPath);
-                if (directory.isDirectory()) {
-                    File[] subfolders = directory.listFiles(File::isDirectory);
-                    if (subfolders != null) {
-                        for (File subfolder : subfolders) {
-                            String folderName = subfolder.getName();
-                            String folderPath = subfolder.getAbsolutePath();
-
-                            case_file_id = casefileService.insert(folderName, folderPath, caseId, uploadedId);//文件名，文件路径入库
-                        }
+                if (uploadCounts.get(caseId) == 2) {
+                    int dotIndex = fileName.lastIndexOf('.');
+                    String newFileName = null;
+                    if (dotIndex > 0) {
+                        newFileName = fileName.substring(0, dotIndex);
                     }
-                } else {
-                    System.out.println("Provided path is not a directory.");
-                }
-                cropTool = new CropTool();
-                cropTool.CropToDB(fileName, caseId, uploadedService, cropService, casefileService);
-                System.out.println(uploadedId);
-                System.out.println(case_file_id);
-                list.add(uploadedId);
-                list.add(case_file_id);
-                // 重置计数
-                uploadCounts.put(caseId, 0);
-            }
-            return ResultBuilder.success(list, ResultCode.SAVE_SUCCESS);
+                    uploadedId = uploadedService.findIdByCaseIdAndName(caseId, newFileName);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultBuilder.faile(ResultCode.CODE_ERROR);
+                    // 把结果的文件夹名字以及地址保存到数据库
+                    String directoryPath = AppRootPath.getappRootPath_result() + caseId + "\\picture";
+                    File directory = new File(directoryPath);
+                    if (directory.isDirectory()) {
+                        File[] subfolders = directory.listFiles(File::isDirectory);
+                        if (subfolders != null) {
+                            for (File subfolder : subfolders) {
+                                String folderName = subfolder.getName();
+                                String folderPath = subfolder.getAbsolutePath();
 
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                                case_file_id = casefileService.insert(folderName, folderPath, caseId, uploadedId); // 文件名，文件路径入库
+                                list.add(case_file_id);
+                            }
+                        }
+                    } else {
+                        System.out.println("Provided path is not a directory.");
+                    }
+
+                    // 进行图片裁剪
+                    CropTool cropTool = new CropTool();
+                    cropTool.CropToDB(fileName, caseId, uploadedService, cropService, casefileService);
+
+                    // 收集上传的ID
+                    list.add(uploadedId);//第二张图片的 uploadedId
+
+                    // 重置计数
+                    uploadCounts.put(caseId, 0);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultBuilder.faile(ResultCode.CODE_ERROR);
             }
         }
+
+        System.out.println("程序结束");
+        return ResultBuilder.success(list, ResultCode.SAVE_SUCCESS);
     }
 
 
@@ -143,6 +222,10 @@ public class UploadedController {
         //根据uploadedId删除crop数据库
         cropService.deleteByUploadedId(uploadedId);
 
+        //删除color数据库
+        cropService.deleteByCaseId(caseId);
+        //删除his数据库
+        histogramService.deleteByCaseId(caseId);
         //删除two数据库
         twoService.deleteByCaseId(caseId);
         //删除three数据库

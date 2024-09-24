@@ -15,7 +15,7 @@ public interface CasefileService extends IService<Casefile> {
 
     Integer insert(String file_name, String file_path, int case_id, int uploaded_id);
 
-    int getIdByName(String file_name);
+    int getIdByNameAndCaseId(String file_name,int case_id);
 
     List<String> getNames(int case_id);
 

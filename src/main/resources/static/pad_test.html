@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .dynamic-buttons {
+            margin-top: 20px;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        img {
+            max-width: 100%;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<h1>Upload Two Images</h1>
+<input type="file" id="image1" accept="image/*" required>
+<br>
+<input type="file" id="image2" accept="image/*" required>
+<br>
+<button id="uploadBtn">Upload</button>
+<button id="showFolderBtn">显示文件夹</button>
+
+<div class="dynamic-buttons" id="buttonContainer"></div>
+
+<h1>Display Images</h1>
+<button id="showResultsBtn">显示结果</button>
+<div id="imageContainer"></div>
+
+<script>
+    let lastResult = null;
+
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+        const file1 = document.getElementById('image1').files[0];
+        const file2 = document.getElementById('image2').files[0];
+
+        if (!file1 || !file2) {
+            alert("Please select both images.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('images', file1);
+        formData.append('images', file2);
+
+        try {
+            const response = await fetch(`http://localhost:8080/uploaded/1/add`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            lastResult = await response.json();
+            alert("Upload successful!");
+        } catch (error) {
+            console.error('Error:', error);
+            alert("Upload failed!");
+        }
+    });
+
+    document.getElementById('showFolderBtn').addEventListener('click', async () => {
+        const caseId = 1; // 替换为实际的 caseId
+        try {
+            const response = await fetch(`http://localhost:8080/casefile/1/load`, {
+                method: 'GET',
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+            displayButtons(result.data);
+        } catch (error) {
+            console.error('Error:', error);
+            alert("Failed to load folder data!");
+        }
+    });
+
+    function displayButtons(data) {
+        const buttonContainer = document.getElementById('buttonContainer');
+        buttonContainer.innerHTML = ''; // 清空之前的按钮
+
+        if (data && Array.isArray(data)) {
+            data.forEach(name => {
+                const button = document.createElement('button');
+                button.innerText = name;
+                button.onclick = () => {
+                    console.log(`Button clicked: ${name}`);
+                    // 可以在这里添加按钮点击后的功能
+                };
+                buttonContainer.appendChild(button);
+            });
+        } else {
+            alert("No data available to display.");
+        }
+    }
+
+    document.getElementById('showResultsBtn').addEventListener('click', async () => {
+        const caseId = 1; // Replace with actual caseId
+        const caseFileId = 1; // Replace with actual case_file_id
+        try {
+            const response = await fetch(`http://localhost:8080/crop/1/445100034/load`, {
+                method: 'GET',
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+            displayImages(result.data);
+        } catch (error) {
+            console.error('Error:', error);
+            alert("Failed to load images!");
+        }
+    });
+
+    function displayImages(imageUrls) {
+        const imageContainer = document.getElementById('imageContainer');
+        imageContainer.innerHTML = ''; // Clear previous images
+
+        if (imageUrls && Array.isArray(imageUrls)) {
+            imageUrls.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'Image';
+                imageContainer.appendChild(img);
+            });
+        } else {
+            alert("No images available to display.");
+        }
+    }
+</script>
+</body>
+</html>

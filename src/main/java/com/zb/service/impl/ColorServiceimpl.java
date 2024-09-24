@@ -32,4 +32,9 @@ public class ColorServiceimpl implements ColorService {
     public List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id) {
         return colorMapper.getCropsByCaseIdAndFileId(case_id, case_file_id);
     }
+
+    @Override
+    public void deleteByCaseId(int caseId) {
+        colorMapper.deleteByCaseId(caseId);
+    }
 }
