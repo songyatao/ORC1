@@ -8,4 +8,6 @@ import java.util.List;
  */
 public interface ThreeService extends BaseService{
     List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id);
+
+    void deleteByCaseId(int caseId);
 }

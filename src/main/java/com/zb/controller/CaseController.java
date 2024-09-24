@@ -3,10 +3,7 @@ package com.zb.controller;
 
 import com.zb.Result.ResultBuilder;
 import com.zb.entity.Cases;
-import com.zb.service.CaseService;
-import com.zb.service.CasefileService;
-import com.zb.service.CropService;
-import com.zb.service.UploadedService;
+import com.zb.service.*;
 import com.zb.tools.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +49,12 @@ public class CaseController {
     private CropService cropService;
     @Autowired
     CasefileService casefileService;
+    @Autowired
+    private TwoService twoService;
+    @Autowired
+    private ThreeService threeService;
+    @Autowired
+    private FourService fourService;
 
     private Map<Integer, Integer> uploadCounts = new HashMap<>();
 
@@ -80,8 +83,13 @@ public class CaseController {
         //删除id相同的案件
         caseService.removeById(id);
 
+        int caseId = uploadedService.findCaseIdById(id);
         //删除two数据库
+        twoService.deleteByCaseId(caseId);
         //删除three数据库
+        twoService.deleteByCaseId(caseId);
+        //删除four数据库
+        fourService.deleteByCaseId(caseId);
 
 
         //删除ori文件夹下的所有文件

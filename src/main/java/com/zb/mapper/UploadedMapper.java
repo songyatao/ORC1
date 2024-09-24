@@ -30,7 +30,8 @@ public interface UploadedMapper extends BaseMapper<Uploaded> {
     @Delete("delete from `uploaded` where case_id = #{caseId}")
     void deleteByCaseId(@Param("caseId") int caseId);
 
-
+    @Select("select case_id from `uploaded` where id = #{id}")
+    int findCaseIdById(@Param("id") int id);
 
 
 }

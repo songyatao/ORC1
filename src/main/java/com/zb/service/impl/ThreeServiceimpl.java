@@ -19,7 +19,7 @@ public class ThreeServiceimpl implements ThreeService {
 
     @Override
     public void insert(int case_id, String file_path, String file_name, int case_file_id) {
-        threeMapper.add(case_id,file_path,file_name,case_file_id);
+        threeMapper.add(case_id, file_path, file_name, case_file_id);
     }
 
     @Override
@@ -29,6 +29,11 @@ public class ThreeServiceimpl implements ThreeService {
 
     @Override
     public List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id) {
-        return threeMapper.getCropsByCaseIdAndFileId(case_id,case_file_id);
+        return threeMapper.getCropsByCaseIdAndFileId(case_id, case_file_id);
+    }
+
+    @Override
+    public void deleteByCaseId(int caseId) {
+        threeMapper.deleteByCaseId(caseId);
     }
 }

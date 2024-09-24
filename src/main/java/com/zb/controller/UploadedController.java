@@ -3,9 +3,7 @@ package com.zb.controller;
 import com.zb.Result.ResultBuilder;
 import com.zb.entity.Cases;
 import com.zb.entity.Uploaded;
-import com.zb.service.CasefileService;
-import com.zb.service.CropService;
-import com.zb.service.UploadedService;
+import com.zb.service.*;
 import com.zb.tools.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +36,12 @@ public class UploadedController {
     CasefileService casefileService;
     @Autowired
     private CropService cropService;
+    @Autowired
+    private TwoService twoService;
+    @Autowired
+    private ThreeService threeService;
+    @Autowired
+    private FourService fourService;
     private Map<Integer, Integer> uploadCounts = new HashMap<>();
     private CropTool cropTool = null;
     String newFileName = null;
@@ -140,7 +144,11 @@ public class UploadedController {
         cropService.deleteByUploadedId(uploadedId);
 
         //删除two数据库
+        twoService.deleteByCaseId(caseId);
         //删除three数据库
+        threeService.deleteByCaseId(caseId);
+        //删除four数据库
+        fourService.deleteByCaseId(caseId);
 
         //删除caseId文件夹下的所有文件
         Path directory1 = Paths.get(AppRootPath.getappRootPath_result() + caseId);
@@ -189,5 +197,5 @@ public class UploadedController {
         return ResultBuilder.success(uploadedService.getById(id), ResultCode.QUERY_SUCCESS);
     }
 
-    //不需要修改
+    //
 }

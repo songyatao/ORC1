@@ -52,7 +52,7 @@ public class DimensionTools {
         }
     }
 
-    public static ResponseEntity<List<String>> toFront(BaseService service, int uploaded_id) {
+    public static HttpResponse<List<String>> toFront(BaseService service, int uploaded_id) {
         List<String> imageUrls = service.getAllImageUrlsByUploadedId(uploaded_id); // Adjust method as needed
         String baseUrl = "http://localhost:8080/";
         List<String> updatedPaths = imageUrls.stream()
@@ -60,6 +60,6 @@ public class DimensionTools {
                         .replace("\\", "/"))
                 .collect(Collectors.toList());
         System.out.println(updatedPaths);
-        return new ResponseEntity<>(updatedPaths, HttpStatus.OK);
+        return ResultBuilder.success(updatedPaths, ResultCode.QUERY_SUCCESS);
     }
 }

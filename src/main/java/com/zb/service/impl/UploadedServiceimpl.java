@@ -57,5 +57,10 @@ public class UploadedServiceimpl extends ServiceImpl<UploadedMapper, Uploaded> i
         uploadedMapper.deleteByCaseId(caseId);
     }
 
+    @Override
+    public int findCaseIdById(int id) {
+        return uploadedMapper.findCaseIdById(id);
+    }
+
 
 }

@@ -65,7 +65,7 @@ public class ThreeController {
         return DimensionTools.toDB(caseId, uploadedService, threeService, casefileService,"three_dimensional");
     }
 
-    //加载结果
+    //查
 
     @RequestMapping("/load/{caseId}/{case_file_id}")
     public HttpResponse<List<String>> createFileNameButton(@PathVariable("caseId") int caseId,

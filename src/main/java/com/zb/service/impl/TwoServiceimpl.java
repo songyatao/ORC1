@@ -32,4 +32,9 @@ public class TwoServiceimpl implements TwoService {
     public List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id) {
         return twoMapper.getCropsByCaseIdAndFileId(case_id, case_file_id);
     }
+
+    @Override
+    public void deleteByCaseId(int caseId) {
+        twoMapper.deleteByCaseId(caseId);
+    }
 }

@@ -15,11 +15,13 @@ public interface UploadedService extends IService<Uploaded> {
     int findIdByPath(String path);
 
     int findIdByCaseIdAndName(int caseId, String name);
+
     int findIdByCaseId(int caseId);
 
     String findFileNameByCaseId(int caseId);
 
     void deleteByCaseId(int caseId);
 
+    int findCaseIdById(int id);
 
 }
