@@ -5,6 +5,8 @@ import com.zb.entity.Cases;
 import com.zb.entity.Uploaded;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 /**
  * @auther 宋亚涛
  * @verson 1.0
@@ -33,5 +35,8 @@ public interface UploadedMapper extends BaseMapper<Uploaded> {
     @Select("select case_id from `uploaded` where id = #{id}")
     int findCaseIdById(@Param("id") int id);
 
+
+    @Select("select file_path from `uploaded` where case_id = #{case_id}")
+    List<String> findPathByCaseId(@Param("case_id") int case_id);
 
 }

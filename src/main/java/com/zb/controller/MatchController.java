@@ -1,10 +1,9 @@
 package com.zb.controller;
 
+import com.zb.Result.ResultBuilder;
 import com.zb.service.MatchService;
 import com.zb.service.UploadedService;
-import com.zb.tools.AppRootPath;
-import com.zb.tools.CallMatch;
-import com.zb.tools.DimensionTools;
+import com.zb.tools.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,11 +33,11 @@ public class MatchController {
 
     @Autowired
     private UploadedService uploadedService;
-//    @Autowired
-//    private MatchService matchService;
+    @Autowired
+    private MatchService matchService;
 
     @PostMapping("/add/{caseId}")
-    public ResponseEntity<?> match(@PathVariable("caseId") int caseId) throws IOException {
+    public HttpResponse match(@PathVariable("caseId") int caseId) throws IOException {
         BufferedReader in = null;
         Map<String, String> response = new HashMap<>();
         //调用 match.py
@@ -47,7 +46,7 @@ public class MatchController {
             CallMatch.Call(in, caseId);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResultBuilder.faile(ResultCode.CODE_ERROR);
         } finally {
             if (in != null) {
                 try {
@@ -59,34 +58,33 @@ public class MatchController {
         }
 
 
-        // 将match的结果放入数据库
-//        String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + fileName + "\\" + "match";
-//        Path baseDirectoryPath = Paths.get(basePath);
-//
-//        try (Stream<Path> subDirectories = Files.walk(baseDirectoryPath, 1)) { // 仅遍历一级子目录
-//            subDirectories.filter(Files::isDirectory).forEach(subDir -> {
-//                Path twoDimensionalPath = subDir.resolve("");
-//                if (Files.exists(twoDimensionalPath) && Files.isDirectory(twoDimensionalPath)) {
-//                    try (Stream<Path> imageFiles = Files.walk(twoDimensionalPath)) {
-//                        imageFiles.filter(Files::isRegularFile).forEach(entry -> {
-//                            // 通过fileName 和 caseId 查找uploaded_id
-//                            int uploaded_id = uploadedService.findIdByCaseIdAndName(caseId, fileName);
-//                            // 处理每个图片文件
-//                            matchService.insert(uploaded_id, entry.toString());
-//                        });
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//    }
+//         将match的结果放入数据库
+        String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + "match";
+        Path baseDirectoryPath = Paths.get(basePath);
+
+        try (Stream<Path> subDirectories = Files.walk(baseDirectoryPath, 1)) { // 仅遍历一级子目录
+            subDirectories.filter(Files::isDirectory).forEach(subDir -> {
+                Path twoDimensionalPath = subDir.resolve("");
+                if (Files.exists(twoDimensionalPath) && Files.isDirectory(twoDimensionalPath)) {
+                    try (Stream<Path> imageFiles = Files.walk(twoDimensionalPath)) {
+                        imageFiles.filter(Files::isRegularFile).forEach(entry -> {
+                            // 处理每个图片文件
+                            matchService.insert(caseId, entry.toString());
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+
+                    }
+                }
+            });
+
+            return ResultBuilder.successNoData(ResultCode.SAVE_SUCCESS);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResultBuilder.faile(ResultCode.CODE_ERROR);
+        }
+
+    }
 
 //    @PostMapping("/result/{caseId}/{uploaded_id}/match")
 //    public ResponseEntity<List<String>> getImages(@PathVariable int uploaded_id) {
@@ -97,6 +95,5 @@ public class MatchController {
 //            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
-        return null;
-    }
 }
+

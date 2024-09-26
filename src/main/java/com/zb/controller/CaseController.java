@@ -59,6 +59,8 @@ public class CaseController {
     private ColorService colorService;
     @Autowired
     private HistogramService histogramService;
+    @Autowired
+    private MatchService matchService;
 
     private Map<Integer, Integer> uploadCounts = new HashMap<>();
 
@@ -79,7 +81,6 @@ public class CaseController {
     @DeleteMapping("/delete/{id}")
     public HttpResponse delete(@PathVariable Integer id) {
 
-
         //删除two数据库
         twoService.deleteByCaseId(id);
         //删除three数据库
@@ -90,37 +91,32 @@ public class CaseController {
         cropService.deleteByCaseId(id);
         //删除casefile数据库
         casefileService.deleteByCaseId(id);
-
         //删除color数据库
         colorService.deleteByCaseId(id);
         //删除his数据库
         histogramService.deleteByCaseId(id);
+        //删除match数据库
+        matchService.deleteByCaseId(id);
+
+        //删除ori文件夹下的相应文件
+        List<String> imagePaths = uploadedService.findPathByCaseId(id);
+        for (String imagePath : imagePaths) {
+            try {
+                Path path = Paths.get(imagePath);
+                // 删除文件
+                Files.deleteIfExists(path);
+                System.out.println("Deleted: " + imagePath);
+            } catch (IOException e) {
+                System.err.println("Failed to delete " + imagePath + ": " + e.getMessage());
+            }
+        }
+
         //删除uploaded数据库
         uploadedService.deleteByCaseId(id);
-
         //删除id相同的案件
         caseService.removeById(id);
 
-
-
-        //删除ori文件夹下的所有文件
-        Path directory = Paths.get(AppRootPath.getappRootPath_ori());
-        try {
-            // 删除文件夹中的所有文件
-            Files.list(directory).forEach(path -> {
-                try {
-                    Files.delete(path);
-                } catch (IOException e) {
-                    System.err.println("删除文件失败: " + path + " " + e.getMessage());
-                }
-            });
-            System.out.println("所有文件已删除。");
-        } catch (IOException e) {
-            System.err.println("读取文件夹失败: " + e.getMessage());
-        }
         //删除caseId命名的文件夹
-
-
         String folderPath = AppRootPath.getappRootPath_result() + id;
         DeleteTools.deleteFolder(new File(folderPath));
 

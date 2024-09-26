@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * @auther 宋亚涛
@@ -60,6 +61,11 @@ public class UploadedServiceimpl extends ServiceImpl<UploadedMapper, Uploaded> i
     @Override
     public int findCaseIdById(int id) {
         return uploadedMapper.findCaseIdById(id);
+    }
+
+    @Override
+    public List<String> findPathByCaseId(int case_id) {
+        return uploadedMapper.findPathByCaseId(case_id);
     }
 
 
