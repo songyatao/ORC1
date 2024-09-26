@@ -63,10 +63,10 @@ def mark_strokes(image_path):
     except Exception as e:
         print(f"保存图像失败: {result_image_path}, 错误信息: {e}")
 
-    result_image_rgb = cv2.cvtColor(result_image, cv2.COLOR_BGR2RGB)
-    plt.imshow(result_image_rgb)
-    plt.axis('off')
-    plt.show()
+    # result_image_rgb = cv2.cvtColor(result_image, cv2.COLOR_BGR2RGB)
+    # plt.imshow(result_image_rgb)
+    # plt.axis('off')
+    # plt.show()
 
 
 def read(base_folder):

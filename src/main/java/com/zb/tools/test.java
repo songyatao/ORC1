@@ -5,6 +5,8 @@ import org.python.jline.internal.TestAccessible;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import static org.apache.coyote.http11.Constants.a;
 
@@ -14,12 +16,11 @@ import static org.apache.coyote.http11.Constants.a;
  */
 public class test {
     @Test
-    public void test() {
-        String appRootPath = System.getProperty("user.dir");
-//        String filePath = appRootPath + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "ori" + File.separator + "a.png";
+    public void test() throws UnsupportedEncodingException {
 
-        System.out.println(appRootPath);
-
+        String path = "http://localhost:8080/images/result/1/picture/00000/img4_00000.jpg";
+        String encodedUrl = URLEncoder.encode(path, "UTF-8");
+        System.out.println(encodedUrl);
 
     }
 }
