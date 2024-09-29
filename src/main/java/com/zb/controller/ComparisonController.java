@@ -23,6 +23,7 @@ public class   ComparisonController {
     @PostMapping("/show")
     public HttpResponse showComparison(@RequestParam("imageUrl1") String imageUrl1,
                                        @RequestParam("imageUrl2") String imageUrl2){
+
         BufferedReader in = null;
         String local_path1 = imageUrl1.replace("http://localhost:8080/", AppRootPath.getappRootPath_static());
         String local_path2 = imageUrl2.replace("http://localhost:8080/", AppRootPath.getappRootPath_static());
