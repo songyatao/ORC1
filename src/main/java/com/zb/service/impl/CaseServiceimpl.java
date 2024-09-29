@@ -7,6 +7,8 @@ import com.zb.service.CaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @auther 宋亚涛
  * @verson 1.0
@@ -27,5 +29,10 @@ public class CaseServiceimpl extends ServiceImpl<CaseMapper, Cases> implements C
         // 保存到数据库并返回生成的 ID
         caseMapper.insert(newCase); // 假设这个方法会插入数据
         return newCase.getId(); // 获取生成的 ID
+    }
+
+    @Override
+    public List<Cases> getAll() {
+        return caseMapper.getAll();
     }
 }

@@ -4,7 +4,6 @@ import com.zb.Result.ResultBuilder;
 import com.zb.tools.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -17,10 +16,12 @@ import java.io.IOException;
 @CrossOrigin//解决跨域问题
 @Slf4j
 public class ScaleController {
+    //Small.py
     //图片放缩
     //1. 前端首先访问 /casefile/{caseId}/load 生成文件夹按钮
     //2. 点击文件夹按钮后访问 /crop/{caseId}/{case_file_id}/load 返回图片url，在页面上显示图片
     //3. 点击图片，访问此接口，将图片的url传入并修改为图片地址，将此地址作为参数传入python程序
+    //http://localhost:8080/scale/show?imageUrl=http://localhost:8080/images/result/1/picture/00000/img4_00000.jpg
 
     //展示图片放缩
     @PostMapping("/show")

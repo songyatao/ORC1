@@ -97,6 +97,7 @@ public class CaseController {
         histogramService.deleteByCaseId(id);
         //删除match数据库
         matchService.deleteByCaseId(id);
+        //删除Stroke数据库
 
         //删除ori文件夹下的相应文件
         List<String> imagePaths = uploadedService.findPathByCaseId(id);
@@ -126,8 +127,8 @@ public class CaseController {
     }
 
     //加载数据ok
-    @RequestMapping("/load")
-    public HttpResponse<Cases> load(Integer id) {
+    @RequestMapping("/load/{id}")
+    public HttpResponse<Cases> loadById(@PathVariable Integer id) {
         return ResultBuilder.success(caseService.getById(id), ResultCode.QUERY_SUCCESS);
     }
 
@@ -137,6 +138,15 @@ public class CaseController {
         caseService.updateById(updateCase);
         return ResultBuilder.successNoData(ResultCode.UPDATE_SUCCESS);
     }
+
+    //返回所有案件
+    @RequestMapping("/load/all")
+    public HttpResponse<List<Cases>> loadAll() {
+        return ResultBuilder.success(caseService.getAll(), ResultCode.QUERY_SUCCESS);
+    }
+
+
+
 
 
 }
