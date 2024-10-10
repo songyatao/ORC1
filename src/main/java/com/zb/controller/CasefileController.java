@@ -58,6 +58,7 @@ public class CasefileController {
     @RequestMapping("/{caseId}/load")
     public HttpResponse<List<String>> createFileNameButton(@PathVariable("caseId") int caseId) {
         List<String> fileNames = casefileService.getNames(caseId);
+        System.out.println(fileNames);
         return ResultBuilder.success(fileNames, ResultCode.QUERY_SUCCESS);
     }
 

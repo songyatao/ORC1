@@ -12,6 +12,8 @@ public class OcrDemoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(OcrDemoApplication.class, args);
+
     }
 
 }
+

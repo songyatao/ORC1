@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @CrossOrigin//解决跨域问题
 @Slf4j
 public class StrokeController {
-    //HengShu
+    //HengShu.py
     @Autowired
     private StrokeService strokeService;
     @Autowired

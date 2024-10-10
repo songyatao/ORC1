@@ -23,6 +23,8 @@ public class ScaleController {
     //3. 点击图片，访问此接口，将图片的url传入并修改为图片地址，将此地址作为参数传入python程序
     //http://localhost:8080/scale/show?imageUrl=http://localhost:8080/images/result/1/picture/00000/img4_00000.jpg
 
+    //问题1：生成的可操作图片是什么形式的
+    //问题2：这个可操作的图片需要在网页上进行操作码
     //展示图片放缩
     @PostMapping("/show")
     public HttpResponse showScale(@RequestParam("imageUrl") String imageUrl) {
