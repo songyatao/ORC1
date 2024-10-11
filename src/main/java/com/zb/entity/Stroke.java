@@ -5,6 +5,7 @@ package com.zb.entity;
  * @verson 1.0
  */
 public class Stroke {
+    //横竖撇捺
     private Integer id;
 
 
