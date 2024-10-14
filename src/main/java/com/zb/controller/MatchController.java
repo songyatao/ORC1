@@ -4,6 +4,8 @@ import com.zb.Result.ResultBuilder;
 import com.zb.service.MatchService;
 import com.zb.service.UploadedService;
 import com.zb.tools.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +39,7 @@ public class MatchController {
     @Autowired
     private MatchService matchService;
 
+    @ApiOperation("对识别成功的结果进行match处理,增")
     @PostMapping("/add/{caseId}")
     public HttpResponse match(@PathVariable("caseId") int caseId) throws IOException {
 
@@ -95,6 +98,7 @@ public class MatchController {
 
     }
 
+    @ApiOperation("match结果返回给前端,查")
     @PostMapping("/result/{caseId}")
     public HttpResponse<List<String>> getImages(@PathVariable int caseId) {
         List<String> imageUrls = matchService.getPathByCaseId(caseId);

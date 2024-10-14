@@ -5,6 +5,7 @@ import com.zb.service.CasefileService;
 import com.zb.service.ColorService;
 import com.zb.service.UploadedService;
 import com.zb.tools.*;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ public class ColorController {
     private CasefileService casefileService;
 
     //增
+    @ApiOperation("color增加")
     @PostMapping("/add/{caseId}")
     public HttpResponse color(@PathVariable("caseId") int caseId) {
 
@@ -67,6 +69,7 @@ public class ColorController {
 
 
     //将结果返回给前端
+    @ApiOperation("将color结果返回给前端")
     @RequestMapping("/load/{caseId}/{case_file_id}")
     public HttpResponse<List<String>> createFileNameButton(@PathVariable("caseId") int caseId,
                                                            @PathVariable("case_file_id") int id) {

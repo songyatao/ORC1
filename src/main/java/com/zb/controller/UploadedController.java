@@ -6,6 +6,8 @@ import com.zb.entity.Cases;
 import com.zb.entity.Uploaded;
 import com.zb.service.*;
 import com.zb.tools.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -58,12 +60,14 @@ public class UploadedController {
 
 
     //上传图片，保存原图，剪裁文件名，剪裁结果到数据库ok
+    //注意：上传的两张图片不能重名
     /*
 
             返回了caseId 和 case_file_id 前端可以从这里获取
             list.add(uploadedId);
             list.add(case_file_id);
      */
+    @ApiOperation("上传图片的接口")
     @PostMapping("/{caseId}/add")
     public HttpResponse<List<Integer>> addPictureAndFileNameAndResult(@PathVariable("caseId") int caseId, @RequestParam("image") MultipartFile file) {
 
@@ -72,7 +76,9 @@ public class UploadedController {
         //本地文件夹中有原始图片和结果
         //首先根据caseId查casefile,如果不为空，就全部删除，如果为空，说明只上传了一张不删除
         //这个就完成了类似更新的操作
+
         List<Casefile> caseFiles = casefileService.getAll(caseId);
+
         if (!(caseFiles == null || caseFiles.isEmpty())) {
             delete(caseId);
         }
@@ -150,7 +156,7 @@ public class UploadedController {
         return ResultBuilder.success(list, ResultCode.SAVE_SUCCESS);
     }
 
-
+    @ApiOperation("删除本案件中的东西")
     @DeleteMapping("/delete/{caseId}")//ok
     public HttpResponse delete(@PathVariable Integer caseId) {
 

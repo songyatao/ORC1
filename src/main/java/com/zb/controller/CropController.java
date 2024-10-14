@@ -46,6 +46,7 @@ public class CropController {
             }
 
      */
+    @ApiOperation("根据caseId和case_file_id返回剪裁结果")
     @GetMapping("/{caseId}/{case_file_id}/load")
     public HttpResponse<List<String>> createFileNameButton(@PathVariable("caseId") int caseId,
                                                            @PathVariable("case_file_id") int id) {

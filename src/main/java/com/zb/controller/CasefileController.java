@@ -7,6 +7,7 @@ import com.zb.tools.AppRootPath;
 import com.zb.tools.HttpResponse;
 import com.zb.tools.ResultCode;
 import com.zb.tools.WordFileFinder;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -32,6 +33,7 @@ public class CasefileController {
     @Autowired
     CasefileService casefileService;
 
+
     @DeleteMapping("/delete/{id}")
     public HttpResponse delete(@PathVariable Integer id) {
         return null;
@@ -55,6 +57,7 @@ public class CasefileController {
 
      */
 
+    @ApiOperation("返回文件夹名")
     @RequestMapping("/{caseId}/load")
     public HttpResponse<List<String>> createFileNameButton(@PathVariable("caseId") int caseId) {
         List<String> fileNames = casefileService.getNames(caseId);
@@ -63,6 +66,7 @@ public class CasefileController {
     }
 
     //下载识别成功的word文档
+    @ApiOperation("下载识别成功的word文档")
     @GetMapping("/{caseId}/downloadWord")
     public ResponseEntity<InputStreamResource> downloadWord(@PathVariable("caseId") int caseId) {
         // 本地文件路径，请根据实际文件路径修改

@@ -6,6 +6,7 @@ import com.zb.service.StrokeService;
 
 import com.zb.service.UploadedService;
 import com.zb.tools.*;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,7 @@ public class StrokeController {
     @Autowired
     private CasefileService casefileService;
 
+    @ApiOperation("识别成功的结果进行笔画处理")
     @PostMapping("/add/{caseId}")
     public HttpResponse stroke(@PathVariable("caseId") int caseId) {
 
@@ -64,6 +66,7 @@ public class StrokeController {
 
     }
 
+    @ApiOperation("返回给前端")
     @RequestMapping("/load/{caseId}/{case_file_id}")
     public HttpResponse<List<String>> createFileNameButton(@PathVariable("caseId") int caseId,
                                                            @PathVariable("case_file_id") int id) {

@@ -6,6 +6,7 @@ import com.zb.service.CasefileService;
 import com.zb.service.FourService;
 import com.zb.service.UploadedService;
 import com.zb.tools.*;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ public class FourController {
     private CasefileService casefileService;
 
     //对识别成功的结果进行四维处理,增
+    @ApiOperation("对识别成功的结果进行四维处理,增")
     @PostMapping("/add/{caseId}")
     public HttpResponse fourDimensional(@PathVariable("caseId") int caseId) {
 
@@ -71,6 +73,7 @@ public class FourController {
     }
 
     //将四维结果返回给前端，查
+    @ApiOperation("将四维结果返回给前端，查")
     @RequestMapping("/load/{caseId}/{case_file_id}")
     public HttpResponse<List<String>> createFileNameButton(@PathVariable("caseId") int caseId,
                                                            @PathVariable("case_file_id") int id) {

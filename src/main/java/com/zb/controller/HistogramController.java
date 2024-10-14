@@ -4,6 +4,7 @@ import com.zb.Result.ResultBuilder;
 import com.zb.service.HistogramService;
 import com.zb.service.UploadedService;
 import com.zb.tools.*;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,6 +30,7 @@ public class HistogramController {
     @Autowired
     private UploadedService uploadedService;
 
+    @ApiOperation("对识别成功的结果进行his处理,增")
     @PostMapping("/add/{caseId}")
     public HttpResponse his(@PathVariable("caseId") int caseId) {
 
@@ -65,6 +67,7 @@ public class HistogramController {
     }
 
     //将his结果返回给前端
+    @ApiOperation("将his结果返回给前端")
     @RequestMapping("/load/{caseId}")
     public HttpResponse<List<String>> getImages(@PathVariable int caseId) {
         List<String> imageUrls = histogramService.getPathByCaseId(caseId);

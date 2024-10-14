@@ -5,6 +5,7 @@ import com.zb.Result.ResultBuilder;
 import com.zb.entity.Cases;
 import com.zb.service.*;
 import com.zb.tools.*;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -70,6 +71,7 @@ public class CaseController {
 
 
     //新增案件ok
+    @ApiOperation("新增案件")
     @PostMapping("/add")
     public HttpResponse<Integer> add(@RequestBody Cases newCase) {
         String title = newCase.getTitle();
@@ -80,6 +82,7 @@ public class CaseController {
     }
 
     //删除案件
+    @ApiOperation("删除案件")
     @DeleteMapping("/delete/{id}")
     public HttpResponse delete(@PathVariable Integer id) {
 
@@ -141,6 +144,7 @@ public class CaseController {
     }
 
     //更新数据ok
+
     @PutMapping("/update")
     public HttpResponse update(@RequestBody Cases updateCase) {
         caseService.updateById(updateCase);
@@ -148,6 +152,7 @@ public class CaseController {
     }
 
     //返回所有案件
+    @ApiOperation("返回案件列表")
     @RequestMapping("/list")
     public HttpResponse<List<Cases>> loadAll() {
         return ResultBuilder.success(caseService.getAll(), ResultCode.QUERY_SUCCESS);
