@@ -2,15 +2,11 @@ package com.zb.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zb.entity.Casefile;
-import com.zb.entity.Cases;
-import com.zb.mapper.CaseMapper;
 import com.zb.mapper.CasefileMapper;
-import com.zb.service.CaseService;
 import com.zb.service.CasefileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,7 +31,7 @@ public class CasefileServiceimpl extends ServiceImpl<CasefileMapper, Casefile> i
 
     @Override
     public int getIdByNameAndCaseId(String file_name, int case_id) {
-        return casefileMapper.getIdByNameAndCaseId(file_name,case_id);
+        return casefileMapper.getIdByNameAndCaseId(file_name, case_id);
     }
 
 
@@ -57,6 +53,11 @@ public class CasefileServiceimpl extends ServiceImpl<CasefileMapper, Casefile> i
     @Override
     public void deleteByCaseId(int caseId) {
         casefileMapper.deleteByCaseId(caseId);
+    }
+
+    @Override
+        public List<Casefile> getAll(int caseId) {
+        return casefileMapper.getAll(caseId);
     }
 
 

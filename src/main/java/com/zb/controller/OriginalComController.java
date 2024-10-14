@@ -28,6 +28,7 @@ public class OriginalComController {
     //将两个地址作为两个参数传给python程序
     @Autowired
     private UploadedService uploadedService;
+
     @PostMapping("/show")
     public HttpResponse showOriginalCom(@RequestParam("caseId") int caseId) {
         BufferedReader in = null;
@@ -36,7 +37,7 @@ public class OriginalComController {
         String secondString = pathByCaseId.get(1);
 
         try {
-            CallOriginalCom.Call(in,firstString,secondString);
+            CallOriginalCom.Call(in, firstString, secondString);
         } catch (Exception e) {
             e.printStackTrace();
             return ResultBuilder.faile(ResultCode.CODE_ERROR);

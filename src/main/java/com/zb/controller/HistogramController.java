@@ -31,31 +31,37 @@ public class HistogramController {
 
     @PostMapping("/add/{caseId}")
     public HttpResponse his(@PathVariable("caseId") int caseId) {
-        BufferedReader in = null;
-        try {
-            CallHistogram.Call(in, caseId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+        List<?> histogramFiles = histogramService.getAll(caseId);
+        if (histogramFiles == null || histogramFiles.isEmpty()) {
+            BufferedReader in = null;
+            try {
+                CallHistogram.Call(in, caseId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
 
-        //结果加入数据库
-        try {
-            String file_path = AppRootPath.getappRootPath_result() + caseId + "\\image_statistics.png";
-            histogramService.add(caseId, file_path);
+            //结果加入数据库
+            try {
+                String file_path = AppRootPath.getappRootPath_result() + caseId + "\\image_statistics.png";
+                histogramService.add(caseId, file_path);
+                return ResultBuilder.successNoData(ResultCode.SAVE_SUCCESS);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultBuilder.faile(ResultCode.CODE_ERROR);
+            }
+        } else {
+            System.out.println("已经存在，不重复添加");
             return ResultBuilder.successNoData(ResultCode.SAVE_SUCCESS);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultBuilder.faile(ResultCode.CODE_ERROR);
         }
-
     }
 
     //将his结果返回给前端

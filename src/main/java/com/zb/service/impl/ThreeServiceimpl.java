@@ -1,5 +1,6 @@
 package com.zb.service.impl;
 
+import com.zb.entity.Casefile;
 import com.zb.mapper.ThreeMapper;
 import com.zb.service.ThreeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,12 @@ public class ThreeServiceimpl implements ThreeService {
     public List<String> getAllImageUrlsByUploadedId(int uploaded_id) {
         return null;
     }
+
+    @Override
+    public List<?> getAll(int caseId) {
+        return threeMapper.getAll(caseId);
+    }
+
 
     @Override
     public List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id) {

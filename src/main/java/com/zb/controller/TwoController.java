@@ -1,6 +1,7 @@
 package com.zb.controller;
 
 import com.zb.Result.ResultBuilder;
+import com.zb.entity.Casefile;
 import com.zb.service.CasefileService;
 import com.zb.service.TwoService;
 import com.zb.service.UploadedService;
@@ -39,26 +40,36 @@ public class TwoController {
 
     //对识别成功的结果进行二维处理,增
     @PostMapping("/add/{caseId}")
-    public HttpResponse twoDimensional(@PathVariable("caseId") int caseId){
-        BufferedReader in = null;
+    public HttpResponse twoDimensional(@PathVariable("caseId") int caseId) {
+        //每次点击数据库都会增加一次结果，逻辑不正确
+        //如果已经有二维的结果了，则不再执行生成逻辑
+        //根据caseId查询two数据库，如果为空，就执行，不为空就不执行
+        List<?> twoFiles = twoService.getAll(caseId);
+        if (twoFiles == null || twoFiles.isEmpty()) {
+            BufferedReader in = null;
 
-        try {
-            CallTwo.Call(in, caseId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultBuilder.faile(ResultCode.CODE_ERROR);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            try {
+                CallTwo.Call(in, caseId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultBuilder.faile(ResultCode.CODE_ERROR);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
+
+
+            return DimensionTools.toDB(caseId, uploadedService, twoService, casefileService, "two_dimensional");
+        } else {
+            System.out.println("已经存在，不重复添加");
+            return ResultBuilder.successNoData(ResultCode.SAVE_SUCCESS);
         }
 
-
-        return DimensionTools.toDB(caseId, uploadedService, twoService, casefileService, "two_dimensional");
 
     }
 

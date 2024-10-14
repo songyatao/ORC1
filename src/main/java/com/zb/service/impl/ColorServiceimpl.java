@@ -1,5 +1,6 @@
 package com.zb.service.impl;
 
+import com.zb.entity.Casefile;
 import com.zb.mapper.ColorMapper;
 import com.zb.service.ColorService;
 import org.apache.ibatis.annotations.Select;
@@ -26,6 +27,11 @@ public class ColorServiceimpl implements ColorService {
     @Override
     public List<String> getAllImageUrlsByUploadedId(int uploadedId) {
         return colorMapper.getCropsByUploadedId(uploadedId);
+    }
+
+    @Override
+    public List<?> getAll(int caseId) {
+        return colorMapper.getAll(caseId);
     }
 
     @Override

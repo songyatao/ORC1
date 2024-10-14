@@ -1,5 +1,6 @@
 package com.zb.service.impl;
 
+import com.zb.entity.Casefile;
 import com.zb.mapper.HistogramMapper;
 import com.zb.service.HistogramService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,12 @@ public class HistogramServiceimpl implements HistogramService {
     public List<String> getAllImageUrlsByUploadedId(int uploadedId) {
         return histogramMapper.getCropsByUploadedId(uploadedId);
     }
+
+    @Override
+    public List<?> getAll(int caseId) {
+        return histogramMapper.getAll(caseId);
+    }
+
 
     @Override
     public void add(int case_id, String file_path) {

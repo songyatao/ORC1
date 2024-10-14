@@ -35,26 +35,34 @@ public class ColorController {
     //增
     @PostMapping("/add/{caseId}")
     public HttpResponse color(@PathVariable("caseId") int caseId) {
-        BufferedReader in = null;
 
-        try {
-            CallColor.Call(in, caseId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultBuilder.faile(ResultCode.CODE_ERROR);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return ResultBuilder.faile(ResultCode.CODE_ERROR);
+        List<?> colorFiles = colorService.getAll(caseId);
+        if (colorFiles == null || colorFiles.isEmpty()) {
+            BufferedReader in = null;
+
+            try {
+                CallColor.Call(in, caseId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultBuilder.faile(ResultCode.CODE_ERROR);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return ResultBuilder.faile(ResultCode.CODE_ERROR);
+                    }
                 }
             }
+
+
+            return DimensionTools.toDB(caseId, uploadedService, colorService, casefileService, "rcolor");
+        } else {
+            System.out.println("已经存在，不重复添加");
+            return ResultBuilder.successNoData(ResultCode.SAVE_SUCCESS);
         }
 
-
-        return DimensionTools.toDB(caseId, uploadedService, colorService, casefileService, "rcolor");
     }
 
 

@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -38,62 +39,72 @@ public class MatchController {
 
     @PostMapping("/add/{caseId}")
     public HttpResponse match(@PathVariable("caseId") int caseId) throws IOException {
-        BufferedReader in = null;
-        Map<String, String> response = new HashMap<>();
-        //调用 match.py
-        try {
 
-            CallMatch.Call(in, caseId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultBuilder.faile(ResultCode.CODE_ERROR);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        List<?> matchFiles = matchService.getAll(caseId);
+        if (matchFiles == null || matchFiles.isEmpty()) {
+            BufferedReader in = null;
+            Map<String, String> response = new HashMap<>();
+            //调用 match.py
+            try {
+
+                CallMatch.Call(in, caseId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultBuilder.faile(ResultCode.CODE_ERROR);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
-        }
 
 
 //         将match的结果放入数据库
-        String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + "match";
-        Path baseDirectoryPath = Paths.get(basePath);
+            String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + "match";
+            Path baseDirectoryPath = Paths.get(basePath);
 
-        try (Stream<Path> subDirectories = Files.walk(baseDirectoryPath, 1)) { // 仅遍历一级子目录
-            subDirectories.filter(Files::isDirectory).forEach(subDir -> {
-                Path twoDimensionalPath = subDir.resolve("");
-                if (Files.exists(twoDimensionalPath) && Files.isDirectory(twoDimensionalPath)) {
-                    try (Stream<Path> imageFiles = Files.walk(twoDimensionalPath)) {
-                        imageFiles.filter(Files::isRegularFile).forEach(entry -> {
-                            // 处理每个图片文件
-                            matchService.insert(caseId, entry.toString());
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            try (Stream<Path> subDirectories = Files.walk(baseDirectoryPath, 1)) { // 仅遍历一级子目录
+                subDirectories.filter(Files::isDirectory).forEach(subDir -> {
+                    Path twoDimensionalPath = subDir.resolve("");
+                    if (Files.exists(twoDimensionalPath) && Files.isDirectory(twoDimensionalPath)) {
+                        try (Stream<Path> imageFiles = Files.walk(twoDimensionalPath)) {
+                            imageFiles.filter(Files::isRegularFile).forEach(entry -> {
+                                // 处理每个图片文件
+                                matchService.insert(caseId, entry.toString());
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
 
+                        }
                     }
-                }
-            });
+                });
 
+                return ResultBuilder.successNoData(ResultCode.SAVE_SUCCESS);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResultBuilder.faile(ResultCode.CODE_ERROR);
+            }
+        } else {
+            System.out.println("已经存在，不重复添加");
             return ResultBuilder.successNoData(ResultCode.SAVE_SUCCESS);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResultBuilder.faile(ResultCode.CODE_ERROR);
         }
+
 
     }
 
-//    @PostMapping("/result/{caseId}/{uploaded_id}/match")
-//    public ResponseEntity<List<String>> getImages(@PathVariable int uploaded_id) {
-//        try {
-//            return  DimensionTools.toFront(matchService, uploaded_id);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @PostMapping("/result/{caseId}")
+    public HttpResponse<List<String>> getImages(@PathVariable int caseId) {
+        List<String> imageUrls = matchService.getPathByCaseId(caseId);
+        String baseUrl = "http://localhost:8080/";
+        List<String> updatedPaths = imageUrls.stream()
+                .map(path -> path.replace(AppRootPath.getappRootPath_static(), baseUrl)
+                        .replace("\\", "/"))
+                .collect(Collectors.toList());
+        System.out.println(updatedPaths);
+        return ResultBuilder.success(updatedPaths, ResultCode.QUERY_SUCCESS);
+    }
 }
 

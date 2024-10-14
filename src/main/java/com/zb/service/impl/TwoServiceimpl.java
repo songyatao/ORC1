@@ -1,5 +1,7 @@
 package com.zb.service.impl;
 
+import com.zb.entity.Casefile;
+import com.zb.entity.Two;
 import com.zb.mapper.TwoMapper;
 import com.zb.service.TwoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +38,10 @@ public class TwoServiceimpl implements TwoService {
     @Override
     public void deleteByCaseId(int caseId) {
         twoMapper.deleteByCaseId(caseId);
+    }
+
+    @Override
+    public List<Two> getAll(int caseId) {
+        return twoMapper.getAll(caseId);
     }
 }

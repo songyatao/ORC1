@@ -24,4 +24,6 @@ public interface CasefileService extends IService<Casefile> {
     void deleteByUploadedId(int uploadedId);
 
     void deleteByCaseId(int caseId);
+
+    List<Casefile> getAll(int caseId);
 }

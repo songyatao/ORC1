@@ -1,5 +1,6 @@
 package com.zb.service;
 
+import com.zb.entity.Casefile;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public abstract interface BaseService {
 
 
     List<String> getAllImageUrlsByUploadedId(int uploadedId);
+
+    List<?> getAll(int caseId);
 }

@@ -1,6 +1,7 @@
 package com.zb.controller;
 
 import com.zb.Result.ResultBuilder;
+import com.zb.entity.Casefile;
 import com.zb.entity.Cases;
 import com.zb.entity.Uploaded;
 import com.zb.service.*;
@@ -48,6 +49,9 @@ public class UploadedController {
     private HistogramService histogramService;
     @Autowired
     private MatchService matchService;
+    @Autowired
+    private StrokeService strokeService;
+
     private Map<Integer, Integer> uploadCounts = new HashMap<>();
     private CropTool cropTool = null;
     String newFileName = null;
@@ -62,6 +66,17 @@ public class UploadedController {
      */
     @PostMapping("/{caseId}/add")
     public HttpResponse<List<Integer>> addPictureAndFileNameAndResult(@PathVariable("caseId") int caseId, @RequestParam("image") MultipartFile file) {
+
+        //如果已经上传并且已经生成结果就删除重新上传生成
+        //如果已经上传了一张图片数据库中原始图片有一张，别的库中没有
+        //本地文件夹中有原始图片和结果
+        //首先根据caseId查casefile,如果不为空，就全部删除，如果为空，说明只上传了一张不删除
+        //这个就完成了类似更新的操作
+        List<Casefile> caseFiles = casefileService.getAll(caseId);
+        if (!(caseFiles == null || caseFiles.isEmpty())) {
+            delete(caseId);
+        }
+
         BufferedReader in = null;
 
         Integer uploadedId = null;
@@ -136,8 +151,8 @@ public class UploadedController {
     }
 
 
-    @DeleteMapping("/delete/{caseId}/{uploadedId}")//ok
-    public HttpResponse delete(@PathVariable Integer caseId, @PathVariable Integer uploadedId) {
+    @DeleteMapping("/delete/{caseId}")//ok
+    public HttpResponse delete(@PathVariable Integer caseId) {
 
         //删除ori文件夹下的相应文件
         List<String> imagePaths = uploadedService.findPathByCaseId(caseId);
@@ -154,9 +169,9 @@ public class UploadedController {
         //删除uploaded数据库,一次删除两个
         uploadedService.deleteByCaseId(caseId);//ok
         //根据uploadedId删除casefile数据库
-        casefileService.deleteByUploadedId(uploadedId);
+        casefileService.deleteByCaseId(caseId);
         //根据uploadedId删除crop数据库
-        cropService.deleteByUploadedId(uploadedId);
+        cropService.deleteByCaseId(caseId);
 
         //删除color数据库
         cropService.deleteByCaseId(caseId);
@@ -169,25 +184,30 @@ public class UploadedController {
         //删除four数据库
         fourService.deleteByCaseId(caseId);
         //删除Stroke数据库
-
+        strokeService.deleteByCaseId(caseId);
         //删除match数据库
         matchService.deleteByCaseId(caseId);
 
         //删除caseId文件夹下的所有文件
         Path directory1 = Paths.get(AppRootPath.getappRootPath_result() + caseId);
         try {
-            // 列出文件夹中的所有文件和子目录并删除
-            Files.list(directory1).forEach(path -> {
-                try {
-                    if (Files.isDirectory(path)) {
-                        DeleteTools.deleteContents(path); // 递归删除子目录
+            // 检查目录是否存在
+            if (Files.exists(directory1) && Files.isDirectory(directory1)) {
+                // 列出文件夹中的所有文件和子目录并删除
+                Files.list(directory1).forEach(path -> {
+                    try {
+                        if (Files.isDirectory(path)) {
+                            DeleteTools.deleteContents(path); // 递归删除子目录
+                        }
+                        Files.delete(path); // 删除文件
+                    } catch (IOException e) {
+                        System.err.println("删除失败: " + path + " " + e.getMessage());
                     }
-                    Files.delete(path); // 删除文件
-                } catch (IOException e) {
-                    System.err.println("删除失败: " + path + " " + e.getMessage());
-                }
-            });
-            System.out.println("所有文件已删除，文件夹1保留。");
+                });
+                System.out.println("所有文件已删除，文件夹1保留。");
+            } else {
+                System.out.println("目录不存在: " + directory1);
+            }
         } catch (IOException e) {
             System.err.println("读取文件夹失败: " + e.getMessage());
         }

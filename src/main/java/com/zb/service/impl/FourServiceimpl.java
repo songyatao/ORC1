@@ -1,5 +1,6 @@
 package com.zb.service.impl;
 
+import com.zb.entity.Casefile;
 import com.zb.mapper.FourMapper;
 import com.zb.service.FourService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,12 @@ public class FourServiceimpl implements FourService {
     public List<String> getAllImageUrlsByUploadedId(int uploadedId) {
         return fourMapper.getCropsByUploadedId(uploadedId);
     }
+
+    @Override
+    public List<?> getAll(int caseId) {
+        return fourMapper.getAll(caseId);
+    }
+
 
     @Override
     public List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id) {

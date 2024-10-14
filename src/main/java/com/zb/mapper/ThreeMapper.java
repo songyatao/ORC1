@@ -1,5 +1,7 @@
 package com.zb.mapper;
 
+import com.zb.entity.Three;
+import com.zb.entity.Two;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -18,4 +20,7 @@ public interface ThreeMapper {
 
     @Delete("delete from `three` where case_id = #{caseId}")
     void deleteByCaseId(@Param("caseId") int caseId);
+
+    @Select("select * from `three` where case_id = #{caseId}")
+    List<Three> getAll(@Param("caseId") int caseId);
 }

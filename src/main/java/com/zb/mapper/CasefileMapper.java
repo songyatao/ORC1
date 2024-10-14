@@ -30,4 +30,6 @@ public interface CasefileMapper extends BaseMapper<Casefile> {
 
     @Delete("delete from `casefile` where case_id = #{caseId}")
     void deleteByCaseId(@Param("caseId") int caseId);
+    @Select("select * from `casefile` where case_id = #{caseId}")
+    List<Casefile> getAll(@Param("caseId") int caseId);
 }

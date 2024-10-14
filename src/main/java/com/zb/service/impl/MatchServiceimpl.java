@@ -1,5 +1,6 @@
 package com.zb.service.impl;
 
+import com.zb.entity.Casefile;
 import com.zb.mapper.MatchMapper;
 import com.zb.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,13 @@ public class MatchServiceimpl implements MatchService {
 
     @Override
     public List<String> getAllImageUrlsByUploadedId(int uploadedId) {
-        return matchMapper.getCropsByUploadedId(uploadedId);
+        return null;
+    }
+
+
+    @Override
+    public List<?> getAll(int caseId) {
+        return matchMapper.getAll(caseId);
     }
 
 
@@ -37,4 +44,11 @@ public class MatchServiceimpl implements MatchService {
     public void deleteByCaseId(int caseId) {
         matchMapper.deleteByCaseId(caseId);
     }
+
+    @Override
+    public List<String> getPathByCaseId(int case_id) {
+        return matchMapper.getPathByCaseId(case_id);
+    }
+
+
 }

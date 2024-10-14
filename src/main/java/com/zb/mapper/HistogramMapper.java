@@ -1,5 +1,7 @@
 package com.zb.mapper;
 
+import com.zb.entity.Histogram;
+import com.zb.entity.Three;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -21,4 +23,6 @@ public interface HistogramMapper {
 
     @Delete("delete from `histogram` where case_id = #{caseId}")
     void deleteByCaseId(@Param("caseId") int caseId);
+    @Select("select * from `histogram` where case_id = #{caseId}")
+    List<Histogram> getAll(@Param("caseId") int caseId);
 }

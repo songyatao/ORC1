@@ -28,7 +28,17 @@ public class StrokeServiceimpl implements StrokeService {
     }
 
     @Override
+    public List<?> getAll(int caseId) {
+        return strokeMapper.getAll(caseId);
+    }
+
+    @Override
     public List<String> getCropsByCaseIdAndFileId(int case_id, int case_file_id) {
         return strokeMapper.getCropsByCaseIdAndFileId(case_id, case_file_id);
+    }
+
+    @Override
+    public void deleteByCaseId(int caseId) {
+        strokeMapper.deleteByCaseId(caseId);
     }
 }

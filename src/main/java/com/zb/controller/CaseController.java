@@ -61,6 +61,8 @@ public class CaseController {
     private HistogramService histogramService;
     @Autowired
     private MatchService matchService;
+    @Autowired
+    private StrokeService strokeService;
 
     private Map<Integer, Integer> uploadCounts = new HashMap<>();
 
@@ -98,6 +100,7 @@ public class CaseController {
         //删除match数据库
         matchService.deleteByCaseId(id);
         //删除Stroke数据库
+        strokeService.deleteByCaseId(id);
 
         //删除ori文件夹下的相应文件
         List<String> imagePaths = uploadedService.findPathByCaseId(id);
@@ -119,7 +122,12 @@ public class CaseController {
 
         //删除caseId命名的文件夹
         String folderPath = AppRootPath.getappRootPath_result() + id;
-        DeleteTools.deleteFolder(new File(folderPath));
+        File folder = new File(folderPath);
+        if (folder.exists() && folder.isDirectory()) {
+            DeleteTools.deleteFolder(folder);
+        } else {
+            System.out.println("文件夹不存在或不是一个目录: " + folderPath);
+        }
 
         return ResultBuilder.successNoData(ResultCode.DELETE_SUCCESS);
 
@@ -140,14 +148,10 @@ public class CaseController {
     }
 
     //返回所有案件
-    @RequestMapping("/load/all")
+    @RequestMapping("/list")
     public HttpResponse<List<Cases>> loadAll() {
         return ResultBuilder.success(caseService.getAll(), ResultCode.QUERY_SUCCESS);
     }
-
-
-
-
 
 }
 

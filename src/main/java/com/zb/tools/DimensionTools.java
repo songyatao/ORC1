@@ -21,6 +21,8 @@ import java.util.stream.Stream;
  */
 public class DimensionTools {
     public static HttpResponse toDB(int caseId, UploadedService uploadedService, BaseService service, CasefileService casefileService, String flag) {
+
+
         String basePath = AppRootPath.getappRootPath_result() + caseId + "\\" + "picture";
         Path baseDirectoryPath = Paths.get(basePath);
 

@@ -39,27 +39,35 @@ public class FourController {
     //对识别成功的结果进行四维处理,增
     @PostMapping("/add/{caseId}")
     public HttpResponse fourDimensional(@PathVariable("caseId") int caseId) {
-        BufferedReader in = null;
-        Map<String, String> response = new HashMap<>();
 
-        try {
-            CallFour.Call(in, caseId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultBuilder.faile(ResultCode.CODE_ERROR);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        List<?> fourFiles = fourService.getAll(caseId);
+        if (fourFiles == null || fourFiles.isEmpty()) {
+            BufferedReader in = null;
+            Map<String, String> response = new HashMap<>();
+
+            try {
+                CallFour.Call(in, caseId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResultBuilder.faile(ResultCode.CODE_ERROR);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
+
+            //将四维结果保存到数据库
+
+            return DimensionTools.toDB(caseId, uploadedService, fourService, casefileService, "four_dimensional");
+        } else {
+            System.out.println("已经存在，不重复添加");
+            return ResultBuilder.successNoData(ResultCode.SAVE_SUCCESS);
         }
 
-        //将四维结果保存到数据库
-
-        return DimensionTools.toDB(caseId, uploadedService, fourService, casefileService, "four_dimensional");
     }
 
     //将四维结果返回给前端，查
