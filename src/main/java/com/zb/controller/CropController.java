@@ -49,7 +49,7 @@ public class CropController {
     @ApiOperation("根据caseId和case_file_id返回剪裁结果")
     @GetMapping("/{caseId}/{case_file_id}/load")
     public HttpResponse<List<String>> createFileNameButton(@PathVariable("caseId") int caseId,
-                                                           @PathVariable("case_file_id") int id) {
+                                                           @PathVariable("case_file_id") int id) throws InterruptedException {
         List<String> imageUrls = cropService.getCropsByCaseIdAndFileId(caseId, id);
         String baseUrl = "http://localhost:8080/";
         List<String> updatedPaths = imageUrls.stream()
@@ -57,6 +57,7 @@ public class CropController {
                         .replace("\\", "/"))
                 .collect(Collectors.toList());
         System.out.println(updatedPaths);
+        Thread.sleep(2000);
         return ResultBuilder.success(updatedPaths, ResultCode.QUERY_SUCCESS);
     }
 
