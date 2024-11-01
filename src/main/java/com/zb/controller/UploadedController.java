@@ -78,6 +78,7 @@ public class UploadedController {
         //这个就完成了类似更新的操作
 
         List<Casefile> caseFiles = casefileService.getAll(caseId);
+        String flag;
 
         if (!(caseFiles == null || caseFiles.isEmpty())) {
             delete(caseId);
@@ -93,8 +94,27 @@ public class UploadedController {
         if (file.isEmpty()) { // 上传的图片文件为空
             return ResultBuilder.faile(ResultCode.USER_NULL_PICTURE_ERROR);
         }
-
+        if(uploadCounts.get(caseId)==null){
+            flag = "_jc";
+        }else{
+            flag = "_yb";
+        }
         String fileName = file.getOriginalFilename();
+        int dotIndex1 = fileName.lastIndexOf('.');
+        if (dotIndex1 != -1) {
+            // 获取文件名部分（不包括扩展名）
+            String nameWithoutExtension = fileName.substring(0, dotIndex1);
+            // 获取扩展名部分
+            String extension = fileName.substring(dotIndex1);
+
+            // 新的文件名，在文件名后添加 "_jc"
+            String newFileName = nameWithoutExtension + flag + extension;
+
+            System.out.println(newFileName);
+            fileName = newFileName;
+        } else {
+            System.out.println("文件名没有找到扩展名。");
+        }
         String file_path = AppRootPath.getappRootPath_ori() + fileName;
         File destinationFile = new File(file_path);
 
@@ -137,7 +157,7 @@ public class UploadedController {
                 cropTool.CropToDB(fileName, caseId, uploadedService, cropService, casefileService);
                 list.add(uploadedId);//第二张图片的 uploadedId
                 // 重置计数
-                uploadCounts.put(caseId, 0);
+                uploadCounts.clear();
             }
 
         } catch (Exception e) {
@@ -180,7 +200,7 @@ public class UploadedController {
         cropService.deleteByCaseId(caseId);
 
         //删除color数据库
-        cropService.deleteByCaseId(caseId);
+        colorService.deleteByCaseId(caseId);
         //删除his数据库
         histogramService.deleteByCaseId(caseId);
         //删除two数据库

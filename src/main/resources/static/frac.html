@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分形维数计算</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1>上传图片以计算分形维数</h1>
+<input type="file" id="imageInput" accept="image/*">
+<button id="uploadButton">上传</button>
+<div id="result"></div>
+
+<script>
+    document.getElementById('uploadButton').addEventListener('click', function() {
+        const fileInput = document.getElementById('imageInput');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert('请选择一张图片!');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        fetch('http://localhost:8080/fractal/add', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网络响应错误');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const resultDiv = document.getElementById('result');
+                if (data.code === 200) { // 根据你的返回结果状态码判断
+                    resultDiv.innerText = '分形维数: ' + data.data;
+                } else {
+                    resultDiv.innerText = '错误: ' + data.message;
+                }
+            })
+            .catch(error => {
+                console.error('上传失败:', error);
+                document.getElementById('result').innerText = '上传失败: ' + error.message;
+            });
+    });
+</script>
+</body>
+</html>
